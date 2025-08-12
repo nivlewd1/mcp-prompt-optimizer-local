@@ -50,11 +50,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/prompt-optimizer/mcp-prompt-optimizer-local"
+    "url": "https://github.com/nivlewd1/mcp-prompt-optimizer-local"
   },
   "homepage": "https://promptoptimizer-blog.vercel.app",
   "bugs": {
-    "url": "https://github.com/prompt-optimizer/mcp-prompt-optimizer-local/issues"
+    "url": "https://github.com/nivlewd1/mcp-prompt-optimizer-local/issues"
   },
   "files": [
     "index.js",
