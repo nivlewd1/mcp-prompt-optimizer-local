@@ -1,0 +1,16 @@
+#!/bin/bash
+# MCP Prompt Optimizer - Linux x64 (Placeholder)
+# This is a development placeholder. Real binary will be built in CI.
+
+echo "MCP Prompt Optimizer v3.1.0 (Linux-x64 placeholder)"
+echo "This is a development placeholder binary."
+echo "Real functionality will be available after CI build."
+
+if [ "$1" = "--version" ]; then
+    echo "3.1.0-placeholder"
+elif [ "$1" = "--check-license" ]; then
+    echo '{"status": "placeholder", "platform": "linux-x64", "version": "3.1.0-dev"}'
+else
+    echo "Usage: mcp-optimizer-linux-x64 [--version] [--check-license]"
+    echo "Note: This is a placeholder binary for development."
+fi

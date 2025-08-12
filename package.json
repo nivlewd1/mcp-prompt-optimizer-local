@@ -1,0 +1,148 @@
+{
+  "name": "mcp-prompt-optimizer-local",
+  "version": "3.1.0",
+  "description": "Advanced Local Prompt Intelligence Engine - Complete privacy with sophisticated content analysis and optimization. Now with cross-platform support for Windows, macOS, and Linux.",
+  "main": "index.js",
+  "bin": {
+    "mcp-prompt-optimizer-local": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "setup": "node setup.js",
+    "test": "node test/integration-test.js",
+    "test-security": "node secure-update/test-security.js",
+    "check-license": "node index.js check-license",
+    "clear-cache": "node index.js clear-cache",
+    "postinstall": "node secure-postinstall.js",
+    "verify-security": "node lib/binary-integrity-verifier.js && node lib/enhanced-api-key-check.js",
+    "generate-manifest": "node secure-update/generate-manifest.js",
+    "generate-manifest-dev": "node secure-update/generate-manifest.js --dev-mode",
+    "validate-manifest": "node secure-update/generate-manifest.js --validate",
+    "verify-implementation": "node verify-implementation.js"
+  },
+  "dependencies": {
+    "cross-spawn": "^7.0.3"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "prompt-intelligence",
+    "local-processing",
+    "privacy-first",
+    "content-analysis",
+    "debugging-enhancement",
+    "technical-preservation",
+    "claude-desktop",
+    "ai-optimization",
+    "secure-installation",
+    "integrity-verification",
+    "cross-platform",
+    "macos",
+    "linux",
+    "windows",
+    "apple-silicon",
+    "arm64"
+  ],
+  "author": "Prompt Optimizer Team <support@promptoptimizer.help>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prompt-optimizer/mcp-prompt-optimizer-local"
+  },
+  "homepage": "https://promptoptimizer-blog.vercel.app",
+  "bugs": {
+    "url": "https://github.com/prompt-optimizer/mcp-prompt-optimizer-local/issues"
+  },
+  "files": [
+    "index.js",
+    "lib/",
+    "bin/",
+    "setup.js",
+    "secure-postinstall.js",
+    "secure-update/",
+    "manifest.json",
+    "test/integration-test.js",
+    "README.md",
+    "CHANGELOG.md",
+    "CROSS-PLATFORM.md",
+    "LICENSE"
+  ],
+  "mcp": {
+    "server": true,
+    "local_processing": true,
+    "privacy_focused": true,
+    "security_features": [
+      "api_key_validation",
+      "binary_integrity_verification",
+      "secure_installation",
+      "tamper_detection",
+      "cross_platform_verification"
+    ],
+    "features": [
+      "intelligent_content_analysis",
+      "technical_parameter_preservation",
+      "debugging_scenario_detection",
+      "context_aware_optimization",
+      "template_management",
+      "llm_integration",
+      "mega_prompt_context_detection",
+      "hybrid_llm_optimization",
+      "cross_platform_support"
+    ]
+  },
+  "security": {
+    "requires_api_key": true,
+    "binary_verification": true,
+    "cross_platform_support": true,
+    "installation_gates": [
+      "api_key_validation",
+      "binary_integrity_check",
+      "platform_compatibility",
+      "permission_verification",
+      "architecture_detection"
+    ]
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "platforms": {
+    "win32-x64": {
+      "binary": "mcp-optimizer-windows-x64.exe",
+      "supported": true
+    },
+    "darwin-x64": {
+      "binary": "mcp-optimizer-macos-x64",
+      "supported": true,
+      "note": "Intel-based Macs"
+    },
+    "darwin-arm64": {
+      "binary": "mcp-optimizer-macos-arm64", 
+      "supported": true,
+      "note": "Apple Silicon Macs (M1, M2, M3+)"
+    },
+    "linux-x64": {
+      "binary": "mcp-optimizer-linux-x64",
+      "supported": true
+    },
+    "linux-arm64": {
+      "binary": "mcp-optimizer-linux-arm64",
+      "supported": true,
+      "note": "ARM64 Linux (Raspberry Pi, ARM servers)"
+    }
+  },
+  "preferGlobal": true,
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "version": "3.1.0",
+  "build_commit": "3a48e271bcfcb8f6ab0a29c91e2fb20eed0513bc",
+  "build_date": "2025-08-12T21:41:48.128Z",
+  "binaries": {
+    "win32-x64": {
+      "filename": "mcp-optimizer-windows-x64.exe",
+      "sha256": "810111eb4b0b205f67eac4065981896ce6df3f732d3ea326d8a5ed8910ba03d3",
+      "size": 18097034,
+      "build_date": "2025-07-10T08:25:19.877Z",
+      "verified": true,
+      "missing": false,
+      "is_primary": true
+    },
+    "darwin-x64": {
+      "filename": "mcp-optimizer-macos-x64",
+      "sha256": "a1ac1878b8dc238d1b64fbf52931b987fd0fec4aa367b1a5529d08122ea96690",
+      "size": 630,
+      "build_date": "2025-08-12T20:33:47.819Z",
+      "verified": false,
+      "missing": false,
+      "is_primary": true,
+      "dev_placeholder": true
+    },
+    "darwin-arm64": {
+      "filename": "mcp-optimizer-macos-arm64",
+      "sha256": "bac1e4ac2075ec49ee105782c047d35e812a98a7c963ed10d9411e11a6f8753d",
+      "size": 638,
+      "build_date": "2025-08-12T20:33:52.908Z",
+      "verified": false,
+      "missing": false,
+      "is_primary": true,
+      "dev_placeholder": true
+    },
+    "linux-x64": {
+      "filename": "mcp-optimizer-linux-x64",
+      "sha256": "a60d56e4870ec44d8dabceea2b6a84c48f3d45db967ad11e7cda75fda16b0839",
+      "size": 630,
+      "build_date": "2025-08-12T20:33:59.903Z",
+      "verified": false,
+      "missing": false,
+      "is_primary": true,
+      "dev_placeholder": true
+    },
+    "linux-arm64": {
+      "filename": "mcp-optimizer-linux-arm64",
+      "sha256": "e784249bbc12ded99f76088a3d47d286a627de83b5449201c31dd4d3807ae042",
+      "size": 638,
+      "build_date": "2025-08-12T20:34:04.998Z",
+      "verified": false,
+      "missing": false,
+      "is_primary": true,
+      "dev_placeholder": true
+    }
+  },
+  "security": {
+    "requires_api_key": true,
+    "verification_required": true,
+    "signature_required": false
+  },
+  "features": [
+    "mega_prompt_context_detection",
+    "simplicity_enum_fix",
+    "hybrid_llm_optimization",
+    "universal_parameter_preservation",
+    "cross_platform_support"
+  ],
+  "platforms_supported": [
+    "win32-x64",
+    "darwin-x64",
+    "darwin-arm64",
+    "linux-x64",
+    "linux-arm64"
+  ],
+  "generation": {
+    "timestamp": "2025-08-12T21:41:48.128Z",
+    "dev_mode": true,
+    "generator_version": "1.0.0"
+  },
+  "build_summary": {
+    "total_platforms": 5,
+    "binaries_found": 1,
+    "placeholders_found": 4,
+    "binaries_missing": 0,
+    "build_complete": false
+  }
+}
