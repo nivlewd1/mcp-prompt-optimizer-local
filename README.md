@@ -2,9 +2,13 @@
 
 Advanced Local Prompt Intelligence Engine with complete privacy and sophisticated content analysis. Now with **universal cross-platform support** for Windows, macOS, and Linux.
 
-## 📹 Demo Video Available
+## 🎬 Demo Video
 
-**[📥 Download Demo Video (11.6MB)](https://github.com/nivlewd1/mcp-prompt-optimizer-local/raw/main/august_12_demo.mp4)**
+See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo:
+
+[![MCP Prompt Optimizer Demo](https://img.youtube.com/vi/6DA6niJR8Es/maxresdefault.jpg)](https://youtu.be/6DA6niJR8Es)
+
+**[🎥 Watch on YouTube](https://www.youtube.com/watch?v=6DA6niJR8Es)**
 
 *Complete installation and usage demonstration showing:*
 - ⚡ Quick cross-platform installation
