@@ -4,28 +4,99 @@ Advanced Local Prompt Intelligence Engine with complete privacy and sophisticate
 
 ## 🚀 Quick Start
 
-### 1. Get Your API Key
-Visit [https://promptoptimizer-blog.vercel.app/local-license](https://promptoptimizer-blog.vercel.app/local-license) to get your API key.
+### 1. Get Your Local License Key
+Visit [https://promptoptimizer-blog.vercel.app/local-license](https://promptoptimizer-blog.vercel.app/local-license) to get your local license key.
 
-### 2. Set Your API Key
+### 2. Set Your License Key
 ```bash
 # Option 1: Environment variable (recommended)
-export OPTIMIZER_API_KEY="your-key-here"
+export OPTIMIZER_API_KEY="sk-local-basic-your-key-here"
 
 # Option 2: Add to shell profile
-echo 'export OPTIMIZER_API_KEY="your-key-here"' >> ~/.bashrc
+echo 'export OPTIMIZER_API_KEY="sk-local-basic-your-key-here"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### 3. Install Globally
+### 3. Optional: Set OpenAI API Key (for LLM Enhancement)
+```bash
+# Optional: For enhanced LLM-powered optimization
+export OPENAI_API_KEY="sk-proj-your-openai-key-here"
+```
+
+### 4. Install Globally
 ```bash
 npm install -g mcp-prompt-optimizer-local
 ```
 
-### 4. Verify Installation
+### 5. Verify Installation
 ```bash
 mcp-prompt-optimizer-local --version
 mcp-prompt-optimizer-local check-license
+```
+
+## 🎯 MCP Client Configuration
+
+### **Claude Desktop** (`~/.claude/claude_desktop_config.json`)
+
+**Basic Configuration (Rules-based optimization only):**
+```json
+{
+  "mcpServers": {
+    "prompt-optimizer-local": {
+      "command": "mcp-prompt-optimizer-local",
+      "env": {
+        "OPTIMIZER_API_KEY": "sk-local-basic-your-key-here"
+      }
+    }
+  }
+}
+```
+
+**Enhanced Configuration (Rules-based + LLM optimization):**
+```json
+{
+  "mcpServers": {
+    "prompt-optimizer-local": {
+      "command": "mcp-prompt-optimizer-local",
+      "env": {
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
+        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+      }
+    }
+  }
+}
+```
+
+### **Cursor** (Settings → Extensions → MCP)
+
+```json
+{
+  "mcpServers": {
+    "prompt-optimizer-local": {
+      "command": "mcp-prompt-optimizer-local",
+      "env": {
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
+        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+      }
+    }
+  }
+}
+```
+
+### **Windsurf** (MCP Settings)
+
+```json
+{
+  "mcpServers": {
+    "prompt-optimizer-local": {
+      "command": "mcp-prompt-optimizer-local",
+      "env": {
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
+        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+      }
+    }
+  }
+}
 ```
 
 ## 🌍 Platform Support
@@ -46,7 +117,7 @@ mcp-prompt-optimizer-local check-license
 
 ## 🛡️ Security Features
 
-- **🔑 API Key Authentication** - Prevents unauthorized usage
+- **🔑 License Key Authentication** - Prevents unauthorized usage
 - **🔍 Binary Integrity Verification** - SHA256 hash validation
 - **🚪 Multi-Gate Installation** - Four-layer security validation
 - **🏠 100% Local Processing** - Complete privacy, no data collection
@@ -58,8 +129,25 @@ mcp-prompt-optimizer-local check-license
 - **🔧 Technical Parameter Preservation** - Maintains code and technical details
 - **🐛 Debugging Scenario Detection** - Context-aware optimization
 - **📝 Template Management** - Save and reuse optimization patterns
-- **🤖 LLM Integration** - Optional OpenAI integration
+- **🤖 Dual Optimization Tiers**:
+  - **Rules-based**: Sophisticated AI-aware optimization (always available)
+  - **LLM-enhanced**: OpenAI-powered optimization (requires OPENAI_API_KEY)
 - **⚡ Performance Optimized** - <2s startup, <500ms per optimization
+
+## 💰 Licensing Options
+
+### **Basic License** - FREE
+- ✅ **5 optimizations/day** - Perfect for trying the platform
+- ✅ **Complete privacy** - No data transmission
+- ✅ **Rules-based optimization** - Sophisticated AI-aware engine
+- ✅ **Local processing** - Runs entirely on your machine
+
+### **Pro License** - $19.99 One-Time
+- ✅ **Unlimited optimizations** - No daily limits
+- ✅ **Enhanced algorithms** - Advanced optimization techniques
+- ✅ **Priority binary updates** - Latest optimization improvements
+- ✅ **Extended offline operation** - 48h license caching
+- ✅ **LLM enhancement support** - Works with OpenAI API
 
 ## 📖 Usage Examples
 
@@ -77,7 +165,7 @@ mcp-prompt-optimizer-local help
 
 ### Configuration Options
 
-#### API Key Sources (Priority Order)
+#### License Key Sources (Priority Order)
 1. **Environment Variable**: `OPTIMIZER_API_KEY`
 2. **User Config File**: `~/.mcp_optimizer/config.json`
 3. **Project .env File**: `.env` in current directory
@@ -85,12 +173,13 @@ mcp-prompt-optimizer-local help
 #### Example Config File
 ```json
 {
-  "apiKey": "your-key-here",
+  "apiKey": "sk-local-pro-your-key-here",
   "version": "3.1.0",
   "features_enabled": [
     "local_processing",
     "template_management",
-    "cross_platform_support"
+    "cross_platform_support",
+    "llm_integration"
   ]
 }
 ```
@@ -151,7 +240,8 @@ chmod +x ~/.npm-global/lib/node_modules/mcp-prompt-optimizer-local/bin/mcp-optim
 ```dockerfile
 FROM node:18-alpine
 RUN npm install -g mcp-prompt-optimizer-local
-ENV OPTIMIZER_API_KEY="your-key-here"
+ENV OPTIMIZER_API_KEY="sk-local-pro-your-key-here"
+ENV OPENAI_API_KEY="sk-proj-your-openai-key-here"
 RUN mcp-prompt-optimizer-local check-license
 ```
 
@@ -160,10 +250,11 @@ RUN mcp-prompt-optimizer-local check-license
 apiVersion: v1
 kind: Secret
 metadata:
-  name: mcp-optimizer-key
+  name: mcp-optimizer-keys
 type: Opaque
 stringData:
-  OPTIMIZER_API_KEY: "your-key-here"
+  OPTIMIZER_API_KEY: "sk-local-pro-your-key-here"
+  OPENAI_API_KEY: "sk-proj-your-openai-key-here"
 ```
 
 ### CI/CD Integration
@@ -171,6 +262,7 @@ stringData:
 - name: Install MCP Optimizer
   run: |
     export OPTIMIZER_API_KEY="${{ secrets.OPTIMIZER_API_KEY }}"
+    export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
     npm install -g mcp-prompt-optimizer-local
     mcp-prompt-optimizer-local check-license
 ```
@@ -228,6 +320,11 @@ npm install -g mcp-prompt-optimizer-local
 - ✅ **Download Security** - Verified downloads from GitHub releases
 - ✅ **Multi-Gate Validation** - Enhanced installation security
 
+### 🤖 LLM Integration
+- ✅ **Dual Optimization Tiers** - Rules-based + optional LLM enhancement
+- ✅ **Automatic Fallback** - Graceful degradation if OpenAI unavailable
+- ✅ **OpenAI Integration** - Enhanced optimization using GPT models
+
 ## 📊 Technical Specifications
 
 - **Node.js**: >=16.0.0
@@ -251,7 +348,7 @@ npm install -g mcp-prompt-optimizer-local
 
 ## 🏷️ License
 
-MIT License - see [LICENSE](./LICENSE) for details.
+Commercial License - see [LICENSE](./LICENSE) for details.
 
 ---
 
