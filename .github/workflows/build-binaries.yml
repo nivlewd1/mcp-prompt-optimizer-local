@@ -65,47 +65,70 @@ jobs:
         shell: bash
         run: mkdir -p src
 
-      # Cross-platform source creation (works on Windows/macOS/Linux)
       - name: Create Python CLI source
-        run: |
-          node -e "require('fs').writeFileSync('src/main.py', `#!/usr/bin/env python3
-\"\"\"
-MCP Prompt Optimizer - ${process.env.PLATFORM} Binary
-Advanced Local Prompt Intelligence Engine with complete privacy
-\"\"\"
-import sys, json, argparse, os
-__version__ = \"${process.env.PACKAGE_VERSION || '3.1.0'}\"
-__platform__ = \"${process.env.PLATFORM}\"
-def check_license():
-    api_key = os.environ.get('OPTIMIZER_API_KEY')
-    if not api_key:
-        return { 'status': 'error', 'message': 'No OPTIMIZER_API_KEY found', 'platform': __platform__, 'version': __version__ }
-    if len(api_key) < 20:
-        return { 'status': 'error', 'message': 'Invalid API key format', 'platform': __platform__, 'version': __version__ }
-    return { 'status': 'valid', 'platform': __platform__, 'version': __version__, 'key_length': len(api_key), 'features': ['local_processing','template_management','cross_platform_support','security_validation'] }
-def main():
-    import argparse
-    p = argparse.ArgumentParser(description=f'MCP Prompt Optimizer Local v{__version__}')
-    p.add_argument('--version', '-v', action='store_true')
-    p.add_argument('--check-license', action='store_true')
-    args, _ = p.parse_known_args()
-    if args.version:
-        print(__version__)
-        return 0
-    if args.check_license:
-        r = check_license()
-        print(json.dumps(r, indent=2))
-        return 0 if r['status'] == 'valid' else 1
-    print(f'MCP Prompt Optimizer v{__version__} ({__platform__})')
-    print('Use --check-license to validate your API key')
-    return 0
-if __name__ == '__main__':
-    sys.exit(main())
-`)"
         shell: bash
-        env:
-          PLATFORM: ${{ matrix.platform }}
-          PACKAGE_VERSION: ${{ github.ref_name && startsWith(github.ref, 'refs/tags/v') && github.ref_name || '3.1.0' }}
+        run: |
+          cat > src/main.py << 'PYTHON_EOF'
+          #!/usr/bin/env python3
+          """
+          MCP Prompt Optimizer - ${{ matrix.platform }} Binary
+          Advanced Local Prompt Intelligence Engine with complete privacy
+          """
+          import sys, json, argparse, os
+          
+          __version__ = "3.1.0"
+          __platform__ = "${{ matrix.platform }}"
+          
+          def check_license():
+              api_key = os.environ.get('OPTIMIZER_API_KEY')
+              if not api_key:
+                  return {
+                      'status': 'error',
+                      'message': 'No OPTIMIZER_API_KEY found',
+                      'platform': __platform__,
+                      'version': __version__
+                  }
+              if len(api_key) < 20:
+                  return {
+                      'status': 'error',
+                      'message': 'Invalid API key format',
+                      'platform': __platform__,
+                      'version': __version__
+                  }
+              return {
+                  'status': 'valid',
+                  'platform': __platform__,
+                  'version': __version__,
+                  'key_length': len(api_key),
+                  'features': [
+                      'local_processing',
+                      'template_management',
+                      'cross_platform_support',
+                      'security_validation'
+                  ]
+              }
+          
+          def main():
+              parser = argparse.ArgumentParser(description=f'MCP Prompt Optimizer Local v{__version__}')
+              parser.add_argument('--version', '-v', action='store_true')
+              parser.add_argument('--check-license', action='store_true')
+              args, _ = parser.parse_known_args()
+              
+              if args.version:
+                  print(__version__)
+                  return 0
+              if args.check_license:
+                  result = check_license()
+                  print(json.dumps(result, indent=2))
+                  return 0 if result['status'] == 'valid' else 1
+              
+              print(f'MCP Prompt Optimizer v{__version__} ({__platform__})')
+              print('Use --check-license to validate your API key')
+              return 0
+          
+          if __name__ == '__main__':
+              sys.exit(main())
+          PYTHON_EOF
 
       - name: Handle existing Windows binary
         if: matrix.platform == 'win32-x64'
