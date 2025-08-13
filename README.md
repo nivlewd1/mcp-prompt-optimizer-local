@@ -2,6 +2,24 @@
 
 Advanced Local Prompt Intelligence Engine with complete privacy and sophisticated content analysis. Now with **universal cross-platform support** for Windows, macOS, and Linux.
 
+## 🎬 Demo Video
+
+See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo showing installation, setup, and live optimization:
+
+### 📹 **[▶️ Watch Full Demo Video](./docs/august_12_demo.mp4)**
+
+**What the demo shows:**
+- ⚡ **Quick Installation** - One-command setup across all platforms
+- 🔑 **License Setup** - Basic (FREE) and Pro ($19.99) configuration  
+- 🔧 **MCP Integration** - Claude Desktop, Cursor, and Windsurf configuration
+- 🧠 **Live Optimization** - Real prompt enhancement examples
+- 🤖 **Dual Tiers** - Rules-based vs LLM-enhanced optimization showcase
+- 🌍 **Cross-Platform** - Windows, macOS, and Linux compatibility
+
+*Duration: ~3-5 minutes | Updated: August 12, 2025*
+
+---
+
 ## 🚀 Quick Start
 
 ### 1. Get Your Local License Key
