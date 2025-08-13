@@ -15,7 +15,6 @@ See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo:
 - 🧠 Live prompt optimization examples
 - 🤖 Dual-tier showcase (Rules + LLM)
 
-*Right-click and "Save As" to download • Duration: ~3-5 minutes*
 ---
 
 ## 🚀 Quick Start
