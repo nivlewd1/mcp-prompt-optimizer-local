@@ -16,135 +16,103 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Windows x64
           - os: windows-latest
             platform: win32-x64
             binary_name: mcp-optimizer-windows-x64.exe
-
+            
+          # macOS x64 (Intel)
           - os: macos-latest
             platform: darwin-x64
             binary_name: mcp-optimizer-macos-x64
-
+            
+          # macOS arm64 (Apple Silicon)
           - os: macos-latest
             platform: darwin-arm64
             binary_name: mcp-optimizer-macos-arm64
-
+            
+          # Linux x64
           - os: ubuntu-latest
             platform: linux-x64
             binary_name: mcp-optimizer-linux-x64
-
+            
+          # Linux arm64
           - os: ubuntu-latest
             platform: linux-arm64
             binary_name: mcp-optimizer-linux-arm64
 
     runs-on: ${{ matrix.os }}
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+          
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-
+          
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install dependencies (skip security in CI)
+          
+      - name: Install dependencies
         env:
-          OPTIMIZER_SKIP_SECURITY: "true"
+          OPTIMIZER_SKIP_SECURITY: "true"  # Skip postinstall in CI
         run: |
           npm ci
           python -m pip install --upgrade pip pyinstaller
-
-      - name: Ensure src directory
-        shell: bash
-        run: mkdir -p src
-
+          
       - name: Create Python CLI source
         shell: bash
         run: |
-          cat > src/main.py << 'PYTHON_EOF'
-          #!/usr/bin/env python3
-          """
-          MCP Prompt Optimizer - ${{ matrix.platform }} Binary
-          Advanced Local Prompt Intelligence Engine with complete privacy
-          """
-          import sys, json, argparse, os
-          
-          __version__ = "3.1.0"
-          __platform__ = "${{ matrix.platform }}"
-          
-          def check_license():
-              api_key = os.environ.get('OPTIMIZER_API_KEY')
-              if not api_key:
-                  return {
-                      'status': 'error',
-                      'message': 'No OPTIMIZER_API_KEY found',
-                      'platform': __platform__,
-                      'version': __version__
-                  }
-              if len(api_key) < 20:
-                  return {
-                      'status': 'error',
-                      'message': 'Invalid API key format',
-                      'platform': __platform__,
-                      'version': __version__
-                  }
-              return {
-                  'status': 'valid',
-                  'platform': __platform__,
-                  'version': __version__,
-                  'key_length': len(api_key),
-                  'features': [
-                      'local_processing',
-                      'template_management',
-                      'cross_platform_support',
-                      'security_validation'
-                  ]
-              }
-          
-          def main():
-              parser = argparse.ArgumentParser(description=f'MCP Prompt Optimizer Local v{__version__}')
-              parser.add_argument('--version', '-v', action='store_true')
-              parser.add_argument('--check-license', action='store_true')
-              args, _ = parser.parse_known_args()
-              
-              if args.version:
-                  print(__version__)
-                  return 0
-              if args.check_license:
-                  result = check_license()
-                  print(json.dumps(result, indent=2))
-                  return 0 if result['status'] == 'valid' else 1
-              
-              print(f'MCP Prompt Optimizer v{__version__} ({__platform__})')
-              print('Use --check-license to validate your API key')
-              return 0
-          
-          if __name__ == '__main__':
-              sys.exit(main())
-          PYTHON_EOF
+          mkdir -p src
+          VERSION=$(node -p "require('./package.json').version")
+          PLATFORM=${{ matrix.platform }}
+          node -e "require('fs').writeFileSync(
+            'src/main.py',
+            \`#!/usr/bin/env python3
+\"\"\"
+MCP Prompt Optimizer - \${PLATFORM} Binary
+Advanced Local Prompt Intelligence Engine with complete privacy
+\"\"\"
+import sys, json, argparse, os
+__version__ = \"\${VERSION}\"
+__platform__ = \"\${PLATFORM}\"
+def check_license():
+    api_key = os.environ.get('OPTIMIZER_API_KEY')
+    if not api_key:
+        return { 'status': 'error', 'message': 'No OPTIMIZER_API_KEY found', 'platform': __platform__, 'version': __version__ }
+    if len(api_key) < 20:
+        return { 'status': 'error', 'message': 'Invalid API key format', 'platform': __platform__, 'version': __version__ }
+    return { 'status': 'valid', 'platform': __platform__, 'version': __version__, 'key_length': len(api_key) }
+def main():
+    parser = argparse.ArgumentParser(description=f'MCP Prompt Optimizer Local v{__version__}')
+    parser.add_argument('--version', '-v', action='store_true', help='Show version')
+    parser.add_argument('--check-license', action='store_true', help='Check license status')
+    args, unknown = parser.parse_known_args()
+    if args.version:
+        print(f\"{__version__}\")
+        return 0
+    if args.check_license:
+        result = check_license()
+        print(json.dumps(result, indent=2))
+        return 0 if result['status'] == 'valid' else 1
+    print(f\"MCP Prompt Optimizer v{__version__} ({__platform__})\")
+    print(\"Use --check-license to validate your API key\")
+    return 0
+if __name__ == '__main__':
+    sys.exit(main())
+\`
+          )"
+        env:
+          VERSION: $VERSION
+          PLATFORM: $PLATFORM
 
-      - name: Handle existing Windows binary
-        if: matrix.platform == 'win32-x64'
-        shell: bash
-        run: |
-          mkdir -p dist
-          if [ -f "bin/${{ matrix.binary_name }}" ]; then
-            cp "bin/${{ matrix.binary_name }}" "dist/${{ matrix.binary_name }}"
-            echo "✅ Using existing Windows binary"
-          else
-            echo "❌ Windows binary not found"
-            exit 1
-          fi
-
-      - name: Build binary (non-Windows)
-        if: matrix.platform != 'win32-x64'
+      - name: Build binary
         shell: bash
         run: |
           mkdir -p dist
@@ -153,21 +121,27 @@ jobs:
             --name "${{ matrix.binary_name }}" \
             --distpath dist/ \
             src/main.py
-          chmod +x "dist/${{ matrix.binary_name }}"
+
+          # On non-Windows, ensure executable permissions
+          if [ "${{ runner.os }}" != "Windows" ]; then
+            chmod +x "dist/${{ matrix.binary_name }}"
+          fi
           echo "✅ Binary built successfully"
 
-      - name: Smoke test binary
+      - name: Test binary
         shell: bash
         run: |
           BINARY_PATH="dist/${{ matrix.binary_name }}"
           ls -la "$BINARY_PATH"
+          
+          # Test basic functionality
           if [ "${{ runner.os }}" = "Windows" ]; then
             "$BINARY_PATH" --version
           else
             "./$BINARY_PATH" --version
           fi
-
-      - name: Update manifest entry for this platform
+        
+      - name: Update manifest entry
         shell: bash
         run: |
           node secure-update/generate-manifest.js \
@@ -180,7 +154,7 @@ jobs:
           name: binary-${{ matrix.platform }}
           path: dist/${{ matrix.binary_name }}
           retention-days: 30
-
+          
       - name: Upload platform manifest
         uses: actions/upload-artifact@v4
         with:
@@ -213,12 +187,15 @@ jobs:
           echo "📦 Release binaries:"
           ls -la release/
 
-      - name: Merge manifests
+      - name: Merge manifests with dynamic version
         run: |
+          # Get version from package.json instead of git tag
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
           node -e "
           const fs = require('fs'), path = require('path');
+          const packageVersion = process.env.PACKAGE_VERSION;
           const finalManifest = {
-            version: (process.env.TAG || '').replace(/^v/, ''),
+            version: packageVersion,
             build_commit: process.env.SHA,
             build_date: new Date().toISOString(),
             binaries: {},
@@ -231,7 +208,13 @@ jobs:
               'cross_platform_support'
             ],
             platforms_supported: [ 'win32-x64','darwin-x64','darwin-arm64','linux-x64','linux-arm64' ],
-            generation: { timestamp: new Date().toISOString(), dev_mode: false, generator_version: '1.0.0', release_tag: process.env.TAG }
+            generation: { 
+              timestamp: new Date().toISOString(), 
+              dev_mode: false, 
+              generator_version: '1.0.0', 
+              release_tag: process.env.TAG,
+              package_version: packageVersion
+            }
           };
           let merged = 0;
           for (const dir of fs.readdirSync('artifacts')) {
@@ -252,14 +235,20 @@ jobs:
             binaries_found: verified,
             binaries_missing: plats.length - verified,
             build_complete: verified === plats.length,
-            merged_manifests: merged
+            merged_manifests: merged,
+            source_version: packageVersion
           };
           fs.writeFileSync('release/manifest.json', JSON.stringify(finalManifest, null, 2));
-          console.log('📋 Final manifest platforms:', plats.length);
+          console.log('📋 Final manifest created');
+          console.log('📦 Package version:', packageVersion);
+          console.log('🏷️  Git tag:', process.env.TAG);
+          console.log('🔢 Platforms:', plats.length);
+          console.log('✅ Verified:', verified + '/' + plats.length);
           "
         env:
           TAG: ${{ github.ref_name }}
           SHA: ${{ github.sha }}
+          PACKAGE_VERSION: $PACKAGE_VERSION
 
       - name: Validate release assets
         run: |
@@ -280,7 +269,15 @@ jobs:
           done
           if [ -f "release/manifest.json" ]; then
             echo "✅ manifest.json"
-            node -e "const m=require('./release/manifest.json');console.log('📋 Manifest Summary:\\n  Version:',m.version,'\\n  Platforms:',Object.keys(m.binaries).length,'\\n  Build complete:',m.build_summary.build_complete)"
+            node -e "
+            const m=require('./release/manifest.json');
+            console.log('📋 Manifest Summary:');
+            console.log('   Package Version:', m.version);
+            console.log('   Git Tag:', m.generation.release_tag);
+            console.log('   Platforms:', Object.keys(m.binaries).length);
+            console.log('   Build Complete:', m.build_summary.build_complete);
+            console.log('   Source Consistency:', m.build_summary.source_version === m.version ? '✅ Consistent' : '❌ Mismatch');
+            "
           else
             echo "❌ Missing: manifest.json"; exit 1
           fi
@@ -313,7 +310,7 @@ jobs:
             mcp-prompt-optimizer-local check-license
             ```
 
-            All binaries are verified with SHA256 integrity checking.
+            All binaries are verified with SHA256 integrity checking and dynamically versioned from package.json.
           files: |
             release/*
         env:
