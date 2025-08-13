@@ -6,7 +6,7 @@ Advanced Local Prompt Intelligence Engine with complete privacy and sophisticate
 
 See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo showing installation, setup, and live optimization:
 
-### 📹 **[▶️ Watch Full Demo Video](./docs/august_12_demo.mp4)**
+### 📹 **[▶️ Watch Full Demo Video](./august_12_demo.mp4)**
 
 **What the demo shows:**
 - ⚡ **Quick Installation** - One-command setup across all platforms
