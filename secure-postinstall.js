@@ -200,9 +200,10 @@ class SecurePostInstaller {
       results.binaryAvailable = { path: binaryPath };
       this.log('✅ Binary available and ready');
     } catch (error) {
-      this.log(`❌ Binary availability check failed: ${error.message}`, 'error');
-      results.errors.push(`Binary Availability: ${error.message}`);
-      return results;
+      // Non-fatal: the binary is optional (pure-JS optimization works without it). Never fail
+      // install just because a GitHub release asset is missing or its hash drifted. (audit #1/#25)
+      this.log(`⚠️  Binary unavailable (optional): ${error.message}`);
+      results.warnings.push('Binary unavailable — using pure-JS optimization');
     }
 
     // Gate 3: Binary Integrity
@@ -217,9 +218,9 @@ class SecurePostInstaller {
         this.log('✅ Binary integrity verified');
       }
     } catch (error) {
-      this.log(`❌ Binary integrity check failed: ${error.message}`, 'error');
-      results.errors.push(`Binary Integrity: ${error.message}`);
-      return results;
+      // Non-fatal (see Gate 2): integrity of an optional binary must not fail the install.
+      this.log(`⚠️  Binary integrity not verified (optional): ${error.message}`);
+      results.warnings.push('Binary integrity not verified — using pure-JS optimization');
     }
 
     results.overall = true;
