@@ -59,7 +59,9 @@
     "SECURITY.md",
     "CROSS-PLATFORM.md"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.15.1"
+  },
   "devDependencies": {},
   "repository": {
     "type": "git",

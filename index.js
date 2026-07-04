@@ -13,6 +13,12 @@ const { spawn } = require('child_process');
 const PromptOptimizer = require('./lib/prompt-optimizer');
 const { MCPToolHandler } = require('./lib/mcp-tools');
 
+// MCP server SDK — real stdio transport so the package works as an MCP server, not just a CLI.
+// Clients (Claude Desktop, etc.) spawn this binary and speak JSON-RPC over stdin/stdout. (audit #2)
+const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
+const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
+const { CallToolRequestSchema, ListToolsRequestSchema } = require('@modelcontextprotocol/sdk/types.js');
+
 // Import existing components with fallbacks
 let BinaryManager, validateApiKey;
 try {
@@ -65,6 +71,34 @@ class MCPPromptOptimizerLocal {
         this.toolHandler = null;
         this.binaryManager = new BinaryManager();
         this.initialized = false;
+
+        // Real MCP server over stdio (audit #2). Handlers delegate to the existing tool handler.
+        const pkg = require('./package.json');
+        this.server = new Server(
+            { name: pkg.name || 'mcp-prompt-optimizer-local', version: pkg.version || '0.0.0' },
+            { capabilities: { tools: {} } }
+        );
+        this.setupMCPHandlers();
+    }
+
+    setupMCPHandlers() {
+        // getMCPTools() -> { tools: [...] } and invokeMCPTool() -> { content: [...] } are already
+        // MCP-shaped (lib/mcp-tools.js), so these handlers are thin delegators.
+        this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+            return await this.getMCPTools();
+        });
+        this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+            const { name, arguments: args } = request.params;
+            return await this.invokeMCPTool(name, args);
+        });
+    }
+
+    async startMCPServer() {
+        await this.initialize();
+        const transport = new StdioServerTransport();
+        await this.server.connect(transport);
+        // stderr only — stdout is the JSON-RPC channel
+        this.log('MCP server running on stdio (JSON-RPC)', 'success');
     }
 
     log(message, level = 'info') {
@@ -101,19 +135,24 @@ class MCPPromptOptimizerLocal {
         }
 
         try {
-            this.log('🚀 Initializing MCP Prompt Optimizer Local v3.1.1...');
+            this.log(`🚀 Initializing MCP Prompt Optimizer Local v${require('./package.json').version}...`);
 
-            // SECURITY: Strict API key validation - NO BYPASS
-            this.log('🔐 Performing API key validation...');
+            // API key is OPTIONAL: local rules-based optimization runs without one (free tier).
+            // A valid key unlocks higher tiers / backend features; its absence must never block
+            // local use — this is a privacy-first local package. (audit #1/#2)
+            this.log('🔐 Checking API key (optional — free tier runs locally without one)...');
             try {
                 const securityResult = await validateApiKey();
-                if (!securityResult.success) {
-                    throw new Error(`API key validation failed: ${securityResult.error || 'Unknown error'}`);
+                if (securityResult && securityResult.success) {
+                    this.log('✅ API key validated', 'success');
+                    this.freeTier = false;
+                } else {
+                    this.log('ℹ️  No valid API key — running FREE tier (local rules-based optimization).');
+                    this.freeTier = true;
                 }
-                this.log('✅ API key validation completed', 'success');
             } catch (error) {
-                this.log(`❌ API key validation failed: ${error.message}`, 'error');
-                throw new Error(`Cannot initialize without valid API key: ${error.message}`);
+                this.log(`ℹ️  Key check skipped (${error.message}); FREE tier active.`);
+                this.freeTier = true;
             }
 
             // Initialize advanced optimizer
@@ -640,9 +679,9 @@ async function main() {
                 process.exit(1);
             }
             
-        } else {
-            // Default: show usage
-            console.log('MCP Prompt Optimizer Local v3.1.1');
+        } else if (args.includes('help') || args.includes('--help')) {
+            // Explicit help
+            console.log('MCP Prompt Optimizer Local');
             console.log('Advanced cross-platform prompt optimization with MCP integration');
             console.log('');
             console.log('Usage:');
@@ -663,8 +702,12 @@ async function main() {
             console.log('Examples:');
             console.log('  node index.js --optimize "write a function" --context code-generation');
             console.log('  node index.js --optimize "create an image" --context image-generation --goals specificity');
+        } else {
+            // No CLI flag: run as a real MCP stdio server — this is how MCP clients (Claude
+            // Desktop, etc.) launch the package. Stays connected until stdin closes.
+            await optimizer.startMCPServer();
         }
-        
+
     } catch (error) {
         console.error(`❌ Error: ${error.message}`);
         process.exit(1);
