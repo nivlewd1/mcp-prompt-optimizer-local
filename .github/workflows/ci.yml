@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    # Gate on the real MCP stdio handshake (free-tier, keyless, no network).
+    # NOT `npm test` (node index.js --test) — that self-test still expects an
+    # API key + the optional binary and reports failures under the free-tier
+    # model, so it cannot gate CI until it is reconciled.
+    - name: MCP handshake (initialize -> tools/list)
+      run: node test-mcp-server.js
