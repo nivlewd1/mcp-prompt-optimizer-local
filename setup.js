@@ -49,7 +49,7 @@ if (hasApiKey) {
 
 function showSetupInstructions() {
     console.log('\n📋 Setup Steps:');
-    console.log('1. 🔗 Get your license: https://promptoptimizer-blog.vercel.app/local-license');
+    console.log('1. 🔗 Get your license: https://promptoptimizer.xyz/local-license');
     console.log('2. 🔧 Set environment variable:');
     console.log('     export OPTIMIZER_API_KEY=your-license-key');
     console.log('3. 🧪 Test setup: npm run setup');

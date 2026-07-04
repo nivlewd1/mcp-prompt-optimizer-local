@@ -1,109 +1,40 @@
 {
   "name": "mcp-prompt-optimizer-local",
-  "version": "3.1.0",
-  "description": "Advanced Local Prompt Intelligence Engine - Complete privacy with sophisticated content analysis and optimization. Now with cross-platform support for Windows, macOS, and Linux.",
+  "version": "4.0.4",
+  "description": "Advanced cross-platform prompt optimization with MCP integration and 120+ optimization rules",
   "main": "index.js",
   "bin": {
-    "mcp-prompt-optimizer-local": "./index.js"
+    "mcp-optimizer": "index.js"
   },
   "scripts": {
-    "start": "node index.js",
-    "setup": "node setup.js",
-    "test": "node test/integration-test.js",
-    "test-security": "node secure-update/test-security.js",
-    "check-license": "node index.js check-license",
-    "clear-cache": "node index.js clear-cache",
+    "test": "node index.js --test",
+    "health": "node index.js --health",
+    "tools": "node index.js --tools",
     "postinstall": "node secure-postinstall.js",
-    "verify-security": "node lib/binary-integrity-verifier.js && node lib/enhanced-api-key-check.js",
+    "validate": "node verify-implementation.js",
+    "optimize": "node index.js --optimize",
+    "check-license": "node index.js --health",
     "generate-manifest": "node secure-update/generate-manifest.js",
-    "generate-manifest-dev": "node secure-update/generate-manifest.js --dev-mode",
-    "validate-manifest": "node secure-update/generate-manifest.js --validate",
-    "verify-implementation": "node verify-implementation.js"
-  },
-  "dependencies": {
-    "cross-spawn": "^7.0.3"
-  },
-  "engines": {
-    "node": ">=16.0.0",
-    "npm": ">=8.0.0"
+    "generate-manifest-dev": "node secure-update/generate-manifest.js --dev-mode"
   },
   "keywords": [
     "mcp",
-    "prompt-intelligence",
-    "local-processing",
-    "privacy-first",
-    "content-analysis",
-    "debugging-enhancement",
-    "technical-preservation",
-    "claude-desktop",
-    "ai-optimization",
-    "secure-installation",
-    "integrity-verification",
+    "mcp-server",
+    "prompt-optimization",
+    "ai",
+    "claude",
+    "prompt-engineering",
     "cross-platform",
-    "macos",
-    "linux",
-    "windows",
-    "apple-silicon",
-    "arm64"
+    "local-ai",
+    "privacy",
+    "optimization-rules",
+    "context-detection",
+    "llm-enhancement"
   ],
-  "author": "Prompt Optimizer Team <support@promptoptimizer.help>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/nivlewd1/mcp-prompt-optimizer-local"
-  },
-  "homepage": "https://promptoptimizer-blog.vercel.app",
-  "bugs": {
-    "url": "https://github.com/nivlewd1/mcp-prompt-optimizer-local/issues"
-  },
-  "files": [
-    "index.js",
-    "lib/",
-    "bin/",
-    "setup.js",
-    "secure-postinstall.js",
-    "secure-update/",
-    "manifest.json",
-    "test/integration-test.js",
-    "README.md",
-    "CHANGELOG.md",
-    "CROSS-PLATFORM.md",
-    "LICENSE"
-  ],
-  "mcp": {
-    "server": true,
-    "local_processing": true,
-    "privacy_focused": true,
-    "security_features": [
-      "api_key_validation",
-      "binary_integrity_verification",
-      "secure_installation",
-      "tamper_detection",
-      "cross_platform_verification"
-    ],
-    "features": [
-      "intelligent_content_analysis",
-      "technical_parameter_preservation",
-      "debugging_scenario_detection",
-      "context_aware_optimization",
-      "template_management",
-      "llm_integration",
-      "mega_prompt_context_detection",
-      "hybrid_llm_optimization",
-      "cross_platform_support"
-    ]
-  },
-  "security": {
-    "requires_api_key": true,
-    "binary_verification": true,
-    "cross_platform_support": true,
-    "installation_gates": [
-      "api_key_validation",
-      "binary_integrity_check",
-      "platform_compatibility",
-      "permission_verification",
-      "architecture_detection"
-    ]
+  "author": "Prompt Optimizer Team <support@promptoptimizer.xyz>",
+  "license": "Proprietary",
+  "engines": {
+    "node": ">=16.0.0"
   },
   "os": [
     "win32",
@@ -114,6 +45,43 @@
     "x64",
     "arm64"
   ],
+  "files": [
+    "index.js",
+    "lib/",
+    "bin/",
+    "secure-postinstall.js",
+    "secure-update/",
+    "manifest.json",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "SECURITY.md",
+    "CROSS-PLATFORM.md"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mcp-prompt-optimizer/local-npm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mcp-prompt-optimizer/local-npm/issues"
+  },
+  "homepage": "https://promptoptimizer.xyz",
+  "config": {
+    "securityRequired": true,
+    "crossPlatform": true,
+    "platforms": [
+      "win32-x64",
+      "darwin-x64",
+      "darwin-arm64",
+      "linux-x64",
+      "linux-arm64"
+    ],
+    "binaryIntegrity": true,
+    "freeTierSupport": true
+  },
   "platforms": {
     "win32-x64": {
       "binary": "mcp-optimizer-windows-x64.exe",
@@ -121,13 +89,11 @@
     },
     "darwin-x64": {
       "binary": "mcp-optimizer-macos-x64",
-      "supported": true,
-      "note": "Intel-based Macs"
+      "supported": true
     },
     "darwin-arm64": {
-      "binary": "mcp-optimizer-macos-arm64", 
-      "supported": true,
-      "note": "Apple Silicon Macs (M1, M2, M3+)"
+      "binary": "mcp-optimizer-macos-arm64",
+      "supported": true
     },
     "linux-x64": {
       "binary": "mcp-optimizer-linux-x64",
@@ -135,14 +101,36 @@
     },
     "linux-arm64": {
       "binary": "mcp-optimizer-linux-arm64",
-      "supported": true,
-      "note": "ARM64 Linux (Raspberry Pi, ARM servers)"
+      "supported": true
     }
   },
-  "preferGlobal": true,
-  "private": false,
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "security": {
+    "cross_platform_support": true,
+    "binary_integrity": true,
+    "api_key_validation": true,
+    "quota_enforcement": true
+  },
+  "mcpTools": {
+    "optimize_prompt": {
+      "description": "Advanced prompt optimization with 120+ rules",
+      "categories": [
+        "prompt-engineering",
+        "ai-enhancement"
+      ]
+    },
+    "template_management": {
+      "description": "Template-based optimization system",
+      "categories": [
+        "templates",
+        "reusability"
+      ]
+    },
+    "quota_status": {
+      "description": "Check current usage quota and limits",
+      "categories": [
+        "monitoring",
+        "quota-management"
+      ]
+    }
   }
 }

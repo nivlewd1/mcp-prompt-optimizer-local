@@ -14,7 +14,7 @@ MCP Prompt Optimizer Local v3.1.0+ supports all major platforms with native bina
 
 ## Quick Start (Any Platform)
 
-1. **Get your API key**: Visit [https://promptoptimizer-blog.vercel.app/local-license](https://promptoptimizer-blog.vercel.app/local-license)
+1. **Get your API key**: Visit [https://promptoptimizer.xyz/local-license](https://promptoptimizer.xyz/local-license)
 
 2. **Set your API key**:
    ```bash

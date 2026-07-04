@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * Enhanced Secure Post-Install Handler with GitHub Release Support
+ * Enhanced Secure Post-Install Handler with FREE TIER SUPPORT
  * - API key validation + binary integrity verification + GitHub release fetching
+ * - NOW SUPPORTS FREE TIER installation without API key
  * - Skips security gates in CI or when OPTIMIZER_SKIP_SECURITY=true
  */
 
@@ -161,7 +162,8 @@ class SecurePostInstaller {
       overall: false,
       errors: [],
       warnings: [],
-      skippedInCI: this.isCI
+      skippedInCI: this.isCI,
+      freeTier: false
     };
 
     // CI/dev override: skip gates
@@ -171,14 +173,22 @@ class SecurePostInstaller {
       return results;
     }
 
-    // Gate 1: API Key
+    // Gate 1: API Key - MODIFIED to allow free tier
     try {
       this.log('🔑 Gate 1: API Key Validation');
-      const apiKeyResult = requireValidApiKey();
+      const apiKeyResult = requireValidApiKey(); // This now returns free tier instead of throwing
       results.apiKey = apiKeyResult;
-      this.log(`✅ API key validated (${apiKeyResult.tier} tier)`);
+      
+      if (apiKeyResult.tier === 'free') {
+        this.log(`✅ FREE tier enabled (5 daily optimizations, no API key required)`);
+        results.freeTier = true;
+        results.warnings.push('Free tier: 5 daily optimizations without API key');
+      } else {
+        this.log(`✅ API key validated (${apiKeyResult.tier} tier)`);
+      }
     } catch (error) {
-      this.log(`❌ API key validation failed: ${error.message}`, 'error');
+      // This should not happen anymore since requireValidApiKey now returns free tier
+      this.log(`❌ Unexpected API key validation error: ${error.message}`, 'error');
       results.errors.push(`API Key: ${error.message}`);
       return results;
     }
@@ -296,11 +306,18 @@ class SecurePostInstaller {
     }
 
     console.log('\n🎉 MCP Prompt Optimizer Local - Installation Complete!\n');
+    
     if (securityResults.skippedInCI) {
       console.log('⚠️ Security checks were skipped in this environment');
     } else {
       console.log('✅ Security validation passed');
-      console.log(`✅ API key validated (${securityResults.apiKey.tier} tier)`);
+      
+      if (securityResults.freeTier) {
+        console.log(`✅ FREE tier activated (5 daily optimizations)`);
+        console.log('💡 Get unlimited optimizations with a Pro license key');
+      } else {
+        console.log(`✅ API key validated (${securityResults.apiKey.tier} tier)`);
+      }
       console.log('✅ Binary integrity verified');
     }
     console.log(`✅ Platform supported (${compatibilityResults.platform.platform}-${compatibilityResults.platform.arch})`);
@@ -314,6 +331,15 @@ class SecurePostInstaller {
     console.log('   mcp-prompt-optimizer-local                 # Start the MCP server');
     console.log('   mcp-prompt-optimizer-local check-license   # Check license status');
     console.log('   mcp-prompt-optimizer-local help            # Show help');
+    
+    if (securityResults.freeTier) {
+      console.log('\n🆓 Free Tier Information:');
+      console.log('   • 5 optimizations per day');
+      console.log('   • Full rules engine access');
+      console.log('   • Local processing (privacy-first)');
+      console.log('   • Upgrade to Pro: https://promptoptimizer.xyz/local-license');
+    }
+    
     console.log('\n📚 Docs: https://promptoptimizer-blog.vercel.app/docs');
     console.log('🌍 Cross-platform guide: https://github.com/nivlewd1/mcp-prompt-optimizer-local/blob/main/CROSS-PLATFORM.md\n');
   }
@@ -343,15 +369,17 @@ class SecurePostInstaller {
     }
 
     console.log('🔧 Troubleshooting:\n');
-    console.log('1. API Key: export OPTIMIZER_API_KEY=your-key-here  (or ~/.mcp_optimizer/config.json with {"apiKey":"your-key"})\n');
-    console.log('2. Binary: npm cache clean --force && npm uninstall && npm install mcp-prompt-optimizer-local\n');
-    console.log('3. Platform: Windows/macOS/Linux on x64/arm64; Node.js 16+\n');
-    console.log('📧 support@promptoptimizer.help\n');
+    console.log('1. FREE TIER: No API key needed - should install automatically');
+    console.log('2. PAID TIER: export OPTIMIZER_API_KEY=your-key-here');
+    console.log('3. Binary: npm cache clean --force && npm uninstall && npm install mcp-prompt-optimizer-local');
+    console.log('4. Platform: Windows/macOS/Linux on x64/arm64; Node.js 16+\n');
+    console.log('🆓 Get free license: https://promptoptimizer.xyz/local-license');
+    console.log('📧 Support: support@promptoptimizer.help\n');
   }
 
   async run() {
-    console.log('🛡️  MCP Prompt Optimizer - Secure Installation');
-    console.log('================================================');
+    console.log('🛡️  MCP Prompt Optimizer - Secure Installation with FREE TIER Support');
+    console.log('================================================================================');
 
     try {
       const securityResults = await this.runSecurityGates();
