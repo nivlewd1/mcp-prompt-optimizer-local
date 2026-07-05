@@ -1,6 +1,6 @@
 {
   "name": "mcp-prompt-optimizer-local",
-  "version": "4.0.4",
+  "version": "4.1.0",
   "description": "Advanced cross-platform prompt optimization with MCP integration and 120+ optimization rules",
   "main": "index.js",
   "bin": {

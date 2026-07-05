@@ -332,7 +332,7 @@ class MCPPromptOptimizerLocal {
         
         const results = {
             timestamp: new Date().toISOString(),
-            version: '3.1.1',
+            version: require('./package.json').version,
             platform: process.platform,
             nodeVersion: process.version
         };
