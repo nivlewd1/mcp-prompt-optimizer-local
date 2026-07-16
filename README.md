@@ -10,7 +10,7 @@ See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo:
 
 *Complete installation and usage demonstration showing:*
 - ⚡ Quick cross-platform installation
-- 🔑 License setup (Basic FREE + Pro $19.99)  
+- 🔑 License setup (Basic FREE + Pro $79 one-time)  
 - 🔧 MCP client configuration
 - 🧠 Live prompt optimization examples
 - 🤖 Dual-tier showcase (Rules + LLM)
@@ -157,7 +157,7 @@ mcp-prompt-optimizer-local check-license
 - ✅ **Rules-based optimization** - Sophisticated AI-aware engine
 - ✅ **Local processing** - Runs entirely on your machine
 
-### **Pro License** - $19.99 One-Time
+### **Pro License** - $79 One-Time
 - ✅ **Unlimited optimizations** - No daily limits
 - ✅ **Enhanced algorithms** - Advanced optimization techniques
 - ✅ **Priority binary updates** - Latest optimization improvements
