@@ -5,6 +5,24 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.2] - 2026-07-18
+
+### Fixed
+- 🔀 **Every MCP tool call response was double-wrapped in a JSON-RPC envelope**: `mcp-tools.js`
+  manually built a full `{jsonrpc, result, id}` envelope, but the SDK's own transport layer
+  already wraps whatever the handler returns in its own envelope — so the real `{content:[...]}`
+  payload ended up nested one level too deep (`result.result.content` instead of `result.content`)
+  for any spec-compliant MCP client to find. `tools/list` was unaffected; every `tools/call` was
+  broken for real clients (Claude Desktop, Claude Code, Cursor). Confirmed by reading the SDK
+  source directly and live-verified with a real MCP client against a real spawned server.
+- 📊 **`get_quota_status` called a JWT-only backend endpoint**: always 403'd for an API-key client.
+  Repointed to the API-key-authed `/api/v1/mcp/quota-status` and remapped its response shape.
+- 📅 **"Resets: Invalid Date"**: neither the free-tier nor keyed-tier quota response ever set a
+  `resetsAt`/reset-text field. Free tier now computes the real next-daily-reset; keyed tier passes
+  through the backend's renewal text instead of feeding `undefined` into `new Date()`.
+- 🔗 **Dead domain**: `promptoptimizer-blog.vercel.app` references in README and postinstall
+  updated to `promptoptimizer.xyz`.
+
 ## [4.1.1] - 2026-07-18
 
 ### Fixed
