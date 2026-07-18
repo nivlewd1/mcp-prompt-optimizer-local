@@ -341,7 +341,7 @@ class SecurePostInstaller {
       console.log('   • Upgrade to Pro: https://promptoptimizer.xyz/local-license');
     }
     
-    console.log('\n📚 Docs: https://promptoptimizer-blog.vercel.app/docs');
+    console.log('\n📚 Docs: https://promptoptimizer.xyz/docs');
     console.log('🌍 Cross-platform guide: https://github.com/nivlewd1/mcp-prompt-optimizer-local/blob/main/CROSS-PLATFORM.md\n');
   }
 

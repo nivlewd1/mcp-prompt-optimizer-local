@@ -20,7 +20,7 @@ See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo:
 ## 🚀 Quick Start
 
 ### 1. Get Your Local License Key
-Visit [https://promptoptimizer-blog.vercel.app/local-license](https://promptoptimizer-blog.vercel.app/local-license) to get your local license key.
+Visit [https://promptoptimizer.xyz/local-license](https://promptoptimizer.xyz/local-license) to get your local license key.
 
 ### 2. Set Your License Key
 ```bash
@@ -306,7 +306,7 @@ npm install -g mcp-prompt-optimizer-local
 
 ## 📚 Documentation
 
-- **📖 Full Documentation**: [https://promptoptimizer-blog.vercel.app/docs](https://promptoptimizer-blog.vercel.app/docs)
+- **📖 Full Documentation**: [https://promptoptimizer.xyz/docs](https://promptoptimizer.xyz/docs)
 - **🌍 Cross-Platform Guide**: [CROSS-PLATFORM.md](./CROSS-PLATFORM.md)
 - **📝 Changelog**: [CHANGELOG.md](./CHANGELOG.md)
 - **🏗️ Implementation Details**: [IMPLEMENTATION-SUMMARY.md](./IMPLEMENTATION-SUMMARY.md)
@@ -371,6 +371,6 @@ Commercial License - see [LICENSE](./LICENSE) for details.
 
 **⭐ Star this repo if you find it useful!**
 
-[🚀 Install Now](https://www.npmjs.com/package/mcp-prompt-optimizer-local) • [📖 Documentation](https://promptoptimizer-blog.vercel.app/docs) • [🌍 Cross-Platform Guide](./CROSS-PLATFORM.md)
+[🚀 Install Now](https://www.npmjs.com/package/mcp-prompt-optimizer-local) • [📖 Documentation](https://promptoptimizer.xyz/docs) • [🌍 Cross-Platform Guide](./CROSS-PLATFORM.md)
 
 </div>
