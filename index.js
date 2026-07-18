@@ -36,28 +36,26 @@ try {
     };
 }
 
-// Simple fallback security validation
+// Startup-time key check. This only checks format — it never calls the backend,
+// so it must never claim the key is "validated". Real validation happens lazily
+// on the first optimize call (lib/license-manager.js). No key is the free tier,
+// a supported mode, not a failure.
 async function fallbackSecurityValidation() {
     const apiKey = process.env.OPTIMIZER_API_KEY || process.env.MCP_LICENSE_KEY;
-    
+
     if (!apiKey) {
+        return { success: true, tier: 'free', message: 'No API key — free tier active' };
+    }
+
+    const LicenseManager = require('./lib/license-manager');
+    if (!new LicenseManager().isValidKeyFormat(apiKey)) {
         return {
             success: false,
-            error: 'No API key found in environment variables. Set OPTIMIZER_API_KEY or MCP_LICENSE_KEY.'
+            error: 'API key format not recognized (expected sk-local-<basic|pro>-...)'
         };
     }
-    
-    if (apiKey.length < 10) {
-        return {
-            success: false,
-            error: 'API key appears to be too short'
-        };
-    }
-    
-    return {
-        success: true,
-        message: 'Basic API key validation passed'
-    };
+
+    return { success: true, tier: 'keyed', message: 'API key format valid — backend check happens on first optimize call' };
 }
 
 // Use fallback security validation for development
@@ -143,11 +141,14 @@ class MCPPromptOptimizerLocal {
             this.log('🔐 Checking API key (optional — free tier runs locally without one)...');
             try {
                 const securityResult = await validateApiKey();
-                if (securityResult && securityResult.success) {
-                    this.log('✅ API key validated', 'success');
+                if (securityResult && securityResult.success && securityResult.tier === 'keyed') {
+                    this.log('✅ API key format valid (backend check happens on first optimize call)', 'success');
                     this.freeTier = false;
+                } else if (securityResult && securityResult.success) {
+                    this.log('ℹ️  No API key — running FREE tier (local rules-based optimization).');
+                    this.freeTier = true;
                 } else {
-                    this.log('ℹ️  No valid API key — running FREE tier (local rules-based optimization).');
+                    this.log(`⚠️  ${securityResult?.error || 'API key check failed'} — falling back to FREE tier.`);
                     this.freeTier = true;
                 }
             } catch (error) {
@@ -499,24 +500,20 @@ class MCPPromptOptimizerLocal {
      * @returns {string} - Optimized prompt
      */
     async optimizePrompt(prompt, context = "llm-interaction", goals = ["clarity"]) {
-        try {
-            if (!this.initialized) {
-                await this.initialize();
-            }
-
-            if (this.optimizer) {
-                // Use advanced optimization
-                const result = await this.optimizer.optimizeForContext(prompt, context, goals);
-                return result.optimizedText;
-            } else {
-                // Fallback to basic optimization
-                return this._basicOptimization(prompt, context, goals);
-            }
-
-        } catch (error) {
-            this.log(`Optimization failed: ${error.message}`, 'error');
-            return prompt; // Return original on error
+        if (!this.initialized) {
+            await this.initialize();
         }
+
+        if (this.optimizer) {
+            // Use advanced optimization. Errors (license/quota failures, etc.)
+            // propagate to the CLI's main() catch, which reports and exits(1) —
+            // silently returning the raw prompt here made failures look like success.
+            const result = await this.optimizer.optimizeForContext(prompt, context, goals);
+            return result.optimizedText;
+        }
+
+        // Fallback to basic optimization
+        return this._basicOptimization(prompt, context, goals);
     }
 
     /**
