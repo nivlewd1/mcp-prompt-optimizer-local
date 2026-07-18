@@ -300,17 +300,17 @@ class MCPPromptOptimizerLocal {
                 "test_123"
             );
 
-            if (optimizeResult.result) {
+            if (!optimizeResult.isError) {
                 this.log(`  ✅ optimize_prompt tool working`);
-                this.log(`  Optimized length: ${optimizeResult.result.content[0].text.length} chars`);
+                this.log(`  Optimized length: ${optimizeResult.content[0].text.length} chars`);
             } else {
-                this.log(`  ❌ optimize_prompt tool failed: ${optimizeResult.error?.message}`, 'error');
+                this.log(`  ❌ optimize_prompt tool failed: ${optimizeResult.content?.[0]?.text}`, 'error');
             }
 
             return {
                 toolsListSuccess: !!toolsList.tools,
                 toolsCount: toolsList.tools?.length || 0,
-                optimizeToolSuccess: !!optimizeResult.result,
+                optimizeToolSuccess: !optimizeResult.isError,
                 optimizeResult: optimizeResult
             };
 

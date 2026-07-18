@@ -248,7 +248,7 @@ class PackageValidationTest {
 
             // Test quota status tool
             const quotaResponse = await toolHandler.handleToolInvoke('get_quota_status', {}, 'test1');
-            if (quotaResponse.result && quotaResponse.result.content) {
+            if (quotaResponse.content && !quotaResponse.isError) {
                 this.pass('QUOTA_STATUS_TOOL', 'get_quota_status tool works');
             } else {
                 this.fail('QUOTA_STATUS_TOOL', 'get_quota_status tool failed');
@@ -473,7 +473,7 @@ class PackageValidationTest {
             const toolHandler = new MCPToolHandler(mockOptimizerQuotaExceeded);
             const response = await toolHandler.handleToolInvoke('optimize_prompt', { prompt: 'test' }, 'test');
 
-            if (response.error && response.error.message.includes('Daily optimization limit')) {
+            if (response.isError && response.content?.[0]?.text?.includes('Daily optimization limit')) {
                 this.pass('ERROR_HANDLING_QUOTA', 'Quota exceeded error handling works');
             } else {
                 this.fail('ERROR_HANDLING_QUOTA', 'Quota exceeded error handling failed');
