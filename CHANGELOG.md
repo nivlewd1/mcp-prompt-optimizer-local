@@ -5,6 +5,22 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.1] - 2026-07-18
+
+### Fixed
+- 🆓 **Free tier was completely non-functional**: no-key requests were unconditionally rejected
+  despite the docs/startup log promising a working free tier. Now works, gated by a new local
+  daily counter (`~/.mcp-daily-usage.json`) that never calls the backend.
+- 🔇 **CLI `--optimize` silently swallowed every failure**: a license/quota error returned the
+  raw unmodified prompt with exit code 0, indistinguishable from a real optimization. Errors now
+  propagate and exit non-zero.
+- 📛 **Startup "API key validated" message was fake**: only checked key length ≥10, no format or
+  backend check. Now reuses the real format validator and doesn't overclaim.
+- 🔢 **Paid-tier quota gate blocked every limited-quota key**: read fields the backend response
+  never sets, so every non-unlimited keyed tier was rejected regardless of actual remaining quota.
+- 🔑 **`MCP_LICENSE_KEY` (legacy env var) silently downgraded to free tier**: recognized at
+  startup but not during actual license validation. Now read consistently.
+
 ## [4.0.4] - 2026-04-13
 
 ### Changed
