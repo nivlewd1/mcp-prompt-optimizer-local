@@ -5,6 +5,31 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.5] - 2026-07-30
+
+### Fixed
+- 🧩 **Rule-chaining splice bug (the 4.1.3 "Known issue," now fixed)**: two related defects
+  combined to produce garbled output like "...security testing.ing strategies to validate the
+  fix". First, `technical_testing_strategy` and 26 sibling rules (14 `technical_*`, 13
+  `business_*` — the whole family of bare-alternation, static-boilerplate-replacement rules with
+  no word boundaries) could match a short trigger word *inside* a longer word, e.g. `test` inside
+  `Testing`, splicing their replacement in mid-word. Fixed the same way as 4.1.4's
+  `hotfix_content_creation_enhancement`: every pattern in the family is now wrapped in
+  `\b...\b`. Second, even with clean whole-word matching, a second "template swap" rule (one
+  whose replacement is a full boilerplate block, not an in-place edit) could still fire against
+  text that an earlier template-swap rule had *just inserted in the same pass* — e.g.
+  `technical_debugging_enhancement` inserts "5. Testing strategies to validate the fix", then
+  `technical_testing_strategy` matches the word "Testing" inside that freshly-inserted text and
+  shoves its own paragraph into the middle of it. `optimizeForContext`'s rule loop now tracks
+  whether a template-swap rule has already fired this pass (replacement length > 3x the matched
+  span) and skips any further template-swap rule, while still letting small in-place tweaks chain
+  as the loop's own comment always intended. Verified via a standalone probe (isolated rule
+  application on plain prompts, before and after), the full `optimizeForContext` pipeline on the
+  original reported debugging prompt, `node index.js --test`, and `tests/e2e-stdio-smoke.js`
+  (11/11, including the black-box subprocess test — the one initial failure was the local dev
+  free-tier daily quota being exhausted from repeated test runs, not a regression, confirmed by
+  resetting `~/.mcp-daily-usage.json` and rerunning clean).
+
 ## [4.1.4] - 2026-07-30
 
 ### Fixed
@@ -47,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Also had the same missing-capture defect as above (the actual error detail was left dangling).
   Both fixed; the specific error/issue text is now folded into the "Problem Description" section.
 
-### Known issue (found during this audit, not fixed here)
+### Known issue (found during this audit, not fixed here — fixed in [4.1.5](#415---2026-07-30))
 - Rules apply sequentially against the *cumulative* output of previous rules, not just the
   original prompt (`optimizeForContext`'s `currentText = enhancedText` chaining in
   `optimization-rules.js`). When multiple "full boilerplate template" rules fire on the same
