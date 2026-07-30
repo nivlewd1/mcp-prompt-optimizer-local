@@ -5,6 +5,28 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.7] - 2026-07-30
+
+### Fixed
+- 🔤 **21 rules rendered literal `\n` text instead of line breaks** (the same defect class fixed
+  for `technical_debugging_enhancement` in 4.1.3, at much larger scale): each rule's `replacement`
+  string was written with an escaped backslash (`\\n` in the JS source), which parses to the
+  two-character sequence backslash+`n` at runtime instead of an actual newline — so multi-section
+  markdown templates rendered as one line littered with visible `\n\n## Heading` text. Affected
+  all 13 `business_*` rules, `marketing_content_enhancement`, `business_strategy_development`,
+  `technical_documentation_enhancement`, `academic_research_enhancement`,
+  `academic_writing_enhancement`, `image_specification_enhancement`,
+  `creative_story_detection_enhanced`, and `expert_add_analysis_framework`. Found by running real
+  prompts end-to-end (real subprocess, real MCP `tools/call`, zero internal coupling) to verify the
+  4.1.5/4.1.6 fixes and inspecting actual output text — `business_proposal_enhancement`'s output
+  showed literal `\n\n## Executive Summary\n...` where a previous same-session audit had called
+  this prompt's output "already good." Fixed by replacing the escaped source token with a real
+  newline in each of the 21 `replacement:` lines only (verified via character-code inspection,
+  not a blind find/replace — the file also has legitimate comment text elsewhere that discusses
+  `\n` as documentation and must not be touched). Verified with `node index.js --test` (80%
+  baseline, unchanged), `tests/e2e-stdio-smoke.js` (11/11), and a fresh 10-prompt real-subprocess
+  quality pass.
+
 ## [4.1.6] - 2026-07-30
 
 ### Fixed
