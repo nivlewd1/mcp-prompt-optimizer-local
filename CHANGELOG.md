@@ -5,6 +5,19 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.4] - 2026-07-30
+
+### Fixed
+- **`hotfix_content_creation_enhancement`'s trigger regex matched "on" hiding inside another
+  word.** The pattern `(?:about|on|for|regarding)` has no word boundaries, so for input like
+  "write a function that reverses a linked list" the engine backtracked the preceding `a\s+\w+`
+  group short by two letters — matching "a functi" instead of "a function" — solely so the "on"
+  at the end of "function" could satisfy the trigger. The entire coding request then got replaced
+  by the rule's generic "Create comprehensive content about..." essay template, discarding the
+  actual ask. Found live while running real prompts through the published package end to end.
+  Fixed by requiring `\b(?:about|on|for|regarding)\b` — the trigger words must now be their own
+  word, not a substring of "function", "reason", "condition", or similar.
+
 ## [4.1.3] - 2026-07-29
 
 ### Fixed
