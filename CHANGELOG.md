@@ -5,6 +5,51 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.8] - 2026-07-30
+
+### Fixed
+- 🔤 **`business_proposal_enhancement` truncated multi-word trailing clauses**: its pattern used
+  `(?:\s+for\s+\w+)*`, which only ever consumes ONE word per repetition of the literal "for" — a
+  real repeat requires "for" to appear again, which it doesn't in normal English — so
+  `"write a proposal for remote work"` matched only `"...for remote"`, leaving `"work"` dangling
+  after the boilerplate swap. Rewritten to `(?:\s+for\s+.+?)?(?:\.|$)`, matching the convention
+  already used by `marketing_content_enhancement`/`business_strategy_development` elsewhere in
+  this file. Found by rerunning the exact prompt live and inspecting the real output; reproduced
+  and fixed before touching anything else.
+- 🧩 **7 more rules had the exact v4.1.5 mid-word-splice defect, previously undiscovered**:
+  `technical_documentation_enhancement`, `marketing_content_enhancement`,
+  `business_strategy_development`, `academic_research_enhancement`,
+  `academic_writing_enhancement`, `image_specification_enhancement`, and
+  `creative_story_detection_enhanced` all lacked a `\b` boundary before their leading trigger
+  alternation. Confirmed live: `"let's recreate documentation for X"` matched `"create"` inside
+  `"recreate"`, producing `"let's reCreate comprehensive technical documentation..."`;
+  `"the doctor will reexamine..."` matched `"examine"` inside `"reexamine"`; four more of the same
+  shape. All 7 fixed with a leading `\b`, verified against both the original splice repro (no
+  longer fires) and the original legitimate trigger phrasing (still fires correctly).
+- 📋 Added `tests/rule-integrity-audit.js` — a permanent, dynamic per-rule test that synthesizes a
+  probe from each rule's own regex source (not static grep, which already undercounted the 4.1.7
+  bug 3-vs-21) and asserts: no literal `\n` regression, no `$N` referencing a non-existent capture
+  group, and no synthetic "canary" token surviving in the output outside the regex's own matched
+  span (ground truth for the truncation/dangling-fragment class covering both fixes above). Plus
+  one static heuristic (bare alternation with no `\b`/`^` anchor) that found the 7 rules above —
+  labeled explicitly as an unproven heuristic requiring manual confirmation, which is how
+  `preserve_ai_parameters` was correctly identified and ruled out as a false positive (CLI-flag
+  syntax, not English prose — safe by construction, not by boundary anchor). Run via
+  `node tests/rule-integrity-audit.js`. All 129 rules now dynamically verified clean.
+
+### Root cause across all bugs found this session (v4.1.3 through v4.1.8)
+Every one of them is the same invariant violated: **the text a rule's regex matches must be fully
+accounted for in what it emits — either preserved via `$N` or deliberately discarded whole, never
+half-eaten.** Missing captures (v4.1.3) under-emitted; missing `\b` (v4.1.5, and 7 more here)
+matched too little of a word and spliced mid-token; the literal-`\n` bug (v4.1.7) was a wrong
+literal in the replacement itself; today's truncation bug matched too little of a multi-word
+clause. Static grep found some instances and missed others (undercounted 4.1.7 3-vs-21, entirely
+missed this session's 7 new discoveries) because it can't observe what the regex actually
+consumes on real input — only running the rule dynamically against real text does. Rules the
+audit script cannot synthesize a trigger for are reported as unverified, not passing; as of this
+version there are none, but any new rule added to the file should be run through
+`node tests/rule-integrity-audit.js` before shipping, not verified by inspection alone.
+
 ## [4.1.7] - 2026-07-30
 
 ### Fixed

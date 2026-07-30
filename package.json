@@ -1,6 +1,6 @@
 {
   "name": "mcp-prompt-optimizer-local",
-  "version": "4.1.7",
+  "version": "4.1.8",
   "description": "Advanced cross-platform prompt optimization with MCP integration and 120+ optimization rules",
   "main": "index.js",
   "bin": {
@@ -9,6 +9,7 @@
   "scripts": {
     "test": "node index.js --test",
     "test:e2e": "node tests/e2e-stdio-smoke.js",
+    "test:rules": "node tests/rule-integrity-audit.js",
     "health": "node index.js --health",
     "tools": "node index.js --tools",
     "postinstall": "node secure-postinstall.js",
