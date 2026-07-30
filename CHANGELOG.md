@@ -5,6 +5,26 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.6] - 2026-07-30
+
+### Fixed
+- 🚪 **Goal-score gate was decorative, not functional**: `optimizeForContext`'s loop logged a rule
+  as `SKIPPED (goal_score=... below dynamic_threshold=...)` when its goal score didn't clear the
+  dynamic threshold, but had no `continue` statement — it fell through and applied the rule
+  anyway. Every prompt run this session was already only exercising rules whose goal score
+  legitimately cleared their threshold (0.62–0.76), so this had gone unnoticed; the only rules the
+  gate was silently failing to filter were ones scoring a hard `0.00` (no goal overlap at all).
+  Found while fixing the rule-chaining splice bug (4.1.5) — same loop, adjacent lines. Fix is the
+  one missing `continue;`. As a side effect this also stops a double `_trackRuleMetric` call
+  (`'skipped'` immediately followed by `'applied'`) for the same rule on the same pass.
+  Verified before touching code: simulated the gate with `continue` against every prompt already
+  validated this session (linked-list, debugging, proposal, image, testing-suite, minimal-input)
+  and confirmed zero rules flip from applied to skipped, and no non-zero-score rule gets newly
+  filtered — the gate only removes rules that were already contributing nothing. Re-verified after
+  the change with `node index.js --test` (80% baseline, unchanged) and
+  `tests/e2e-stdio-smoke.js` (11/11), including re-running the 4.1.5 debugging-prompt canary to
+  confirm the template-swap-collision guard and the now-functional gate don't interact badly.
+
 ## [4.1.5] - 2026-07-30
 
 ### Fixed
