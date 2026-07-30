@@ -5,6 +5,48 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.3] - 2026-07-29
+
+### Fixed
+- 🧵 **`info`/`debug` log lines leaked onto stdout**: `prompt-optimizer.js` and `mcp-tools.js`
+  each built their own logger with `info`/`debug` routed through `console.log` (stdout) while
+  `warn`/`error` correctly went to `console.error` (stderr). When running as an MCP server,
+  stdout is the JSON-RPC channel — any client that parses each stdout line as JSON-RPC (a
+  reasonable implementation choice; this audit's own black-box test did exactly that) would hit
+  unparseable lines like `[INFO] Rules engine loaded with 129 optimization rules` interleaved
+  with real responses. Same defect class the cloud package fixed in `c2ab906`; this package still
+  had it. All four log levels now go to stderr except `warn`/`error`, which already did.
+  Found and confirmed via a new black-box test (`tests/e2e-stdio-smoke.js`) that spawns the
+  published binary as a real subprocess and speaks JSON-RPC over stdio, exactly as an external
+  MCP client would — no internal class imports, no mocking.
+- 🧩 **`technical_request_enhancement` and `technical_security_audit` rules discarded the user's
+  actual ask**: both had a regex `pattern` with no capture group and a fully static `replacement`
+  string. `String.replace()` only replaces the matched span, so e.g. "write a **function that
+  reverses a linked list**" matched only "write a function", got swapped for boilerplate, and
+  left "that reverses a linked list" dangling after it as a disconnected sentence fragment — the
+  specific technical ask silently discarded from the middle. Same bug class as the backend's
+  `c32f518` (Tier-1 template rewrite discarding the prompt). Both rules now capture the trailing
+  clause and fold it back into the boilerplate via `$1`, and `technical_request_enhancement` no
+  longer hardcodes "function" when the ask was a script/program/application.
+- 🔤 **`technical_debugging_enhancement`'s template rendered literal `\n` text**: the replacement
+  string used `\\n` inside a double-quoted JS string, which is a literal backslash+n, not a
+  newline — output showed `\n\n**Problem Description:**` as visible text instead of line breaks.
+  Also had the same missing-capture defect as above (the actual error detail was left dangling).
+  Both fixed; the specific error/issue text is now folded into the "Problem Description" section.
+
+### Known issue (found during this audit, not fixed here)
+- Rules apply sequentially against the *cumulative* output of previous rules, not just the
+  original prompt (`optimizeForContext`'s `currentText = enhancedText` chaining in
+  `optimization-rules.js`). When multiple "full boilerplate template" rules fire on the same
+  prompt, a later rule's pattern can match text an earlier rule just inserted, splicing its own
+  replacement mid-word (observed: `technical_debugging_enhancement`'s "5. Testing strategies to
+  validate the fix" got `technical_testing_strategy` spliced into its middle, producing "...
+  security testing.ing strategies to validate the fix"). Reproduced independent of the fixes
+  above. A real fix needs "full-template" rules to be mutually exclusive (only the
+  highest-priority one fires) rather than stackable like the small in-place tweak rules are —
+  a change to the core `RulesEngine` loop that all 129 rules run through, out of scope for this
+  pass given the blast radius.
+
 ## [4.1.2] - 2026-07-18
 
 ### Fixed
