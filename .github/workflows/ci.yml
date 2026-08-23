@@ -28,3 +28,8 @@ jobs:
     # model, so it cannot gate CI until it is reconciled.
     - name: MCP handshake (initialize -> tools/list)
       run: node test-mcp-server.js
+    # Gate on the rule-integrity audit — the tool that found every
+    # mid-word-splice defect across v4.1.5-4.1.8. Previously run only by
+    # hand; see docs/superpowers/plans/2026-08-22-gate-ci-on-rule-integrity-audit.md.
+    - name: Rule integrity audit
+      run: npm run test:rules
