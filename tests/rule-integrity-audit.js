@@ -249,6 +249,23 @@ function countCaptureGroups(source) {
   return count;
 }
 
+function findMatchingParenEnd(source, openIndex) {
+  // Returns the index of the ')' that closes the '(' at openIndex, or -1 if
+  // openIndex isn't an opening paren or has no match (shouldn't happen for a
+  // pattern that already compiled into a RegExp).
+  if (source[openIndex] !== '(') return -1;
+  let depth = 0;
+  for (let i = openIndex; i < source.length; i++) {
+    if (source[i] === '\\') { i++; continue; }
+    if (source[i] === '(') depth++;
+    else if (source[i] === ')') {
+      depth--;
+      if (depth === 0) return i;
+    }
+  }
+  return -1;
+}
+
 function main() {
   const engine = new RulesEngine();
   const results = { verified: [], unverified: [], flagged: [], informational: [] };
@@ -337,7 +354,21 @@ function main() {
     const hasAlternation = /\(\?:[^)]*\|[^)]*\)/.test(src);
     const hasBoundary = src.includes('\\b');
     const hasAnchor = src.startsWith('^');
-    if (hasAlternation && !hasBoundary && !hasAnchor) {
+    // A pure whole-match identity replacement ($1, where group 1 is a single
+    // outer group spanning the entire pattern) cannot mid-word-splice no
+    // matter where the alternation sits inside it: the output is always
+    // exactly whatever the regex matched, unchanged. The splice risk this
+    // check exists to catch requires the replacement to NOT reproduce the
+    // full match verbatim (a literal, a partial-group reference, multiple
+    // groups) -- that mismatch is what caused every real v4.1.5-4.1.8 bug.
+    // See preserve_ai_parameters (lib/optimization-rules.js), flagged here
+    // before this guard despite `replacement: "$1"` on a pattern that is
+    // one single outer-wrapping group.
+    const isWholeMatchIdentity =
+      rule.replacement.trim() === '$1' &&
+      src.startsWith('(') &&
+      findMatchingParenEnd(src, 0) === src.length - 1;
+    if (hasAlternation && !hasBoundary && !hasAnchor && !isWholeMatchIdentity) {
       issues.push('STATIC HEURISTIC (unproven): bare alternation with no \\b anchor and no ^ anchor -- possible mid-word match risk, same shape as the v4.1.5 bug class; needs manual review, not auto-confirmed');
     }
 
