@@ -1,6 +1,6 @@
 # Gate CI on the Rule-Integrity Audit Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Make `npm run test:rules` (`tests/rule-integrity-audit.js`) — the tool that found all 27+21+7 mid-word-splice defects fixed across v4.1.5-4.1.8 — a required CI check, so a reintroduced instance of that exact bug class is caught automatically instead of only when someone remembers to run the script by hand.
 
@@ -36,12 +36,12 @@
 
 **Context:** `preserve_ai_parameters` (`lib/optimization-rules.js:1333-1341`) has pattern `(--\w+(?:\s+(?:"[^"]*"|'[^']*'|[^\s]+))?)` and `replacement: "$1"`. The entire pattern is one outer group (opens at index 0, its matching `)` is the last character of the source), and the replacement is exactly that group's backreference — so whatever this regex matches is reproduced in the output completely unchanged, regardless of where the internal alternation sits or whether it has a `\b`/`^` anchor. Check 4's current logic (`tests/rule-integrity-audit.js:337-342`) flags any bare alternation lacking those anchors as a "possible mid-word match risk" without accounting for this — a real gap in the heuristic, not a bug in the rule. Confirmed via the audit's own output this session: probe `"--x \"zzcanary1 zzcanary2 zzcanary3\""` produced identical output, and the script's own label already reads `STATIC HEURISTIC (unproven) ... needs manual review, not auto-confirmed` — this task is that manual review.
 
-- [ ] **Step 1: Confirm the current failing baseline**
+- [x] **Step 1: Confirm the current failing baseline**
 
 Run: `npm run test:rules`
 Expected: exit code 1, "Flagged (real issue found): 1", the flagged rule is `preserve_ai_parameters` with the `STATIC HEURISTIC` message. This is the state being fixed — no code change yet, this step is just establishing the baseline to compare against after Step 3.
 
-- [ ] **Step 2: Add the matching-paren helper**
+- [x] **Step 2: Add the matching-paren helper**
 
 In `tests/rule-integrity-audit.js`, immediately after `countCaptureGroups` (ends at line 250), add:
 
@@ -64,7 +64,7 @@ function findMatchingParenEnd(source, openIndex) {
 }
 ```
 
-- [ ] **Step 3: Add the whole-match-identity guard to Check 4**
+- [x] **Step 3: Add the whole-match-identity guard to Check 4**
 
 In `tests/rule-integrity-audit.js`, replace:
 
@@ -116,16 +116,16 @@ with:
     }
 ```
 
-- [ ] **Step 4: Verify the fix against the real rule set**
+- [x] **Step 4: Verify the fix against the real rule set**
 
 Run: `npm run test:rules`
 Expected: exit code 0, "Flagged (real issue found): 0", "Verified clean (dynamic probe passed all checks): 129" (up from 128). `preserve_ai_parameters` no longer appears in the FLAGGED section. The INFORMATIONAL section (`business_proposal_enhancement`) is untouched — this task only affects Check 4, not the informational check.
 
-- [ ] **Step 5: Sanity-check the guard doesn't over-suppress**
+- [x] **Step 5: Sanity-check the guard doesn't over-suppress**
 
 This is a manual reasoning check, not an automated test (this script has no meta-test harness of its own — running it against the real 129-rule set, as in Step 4, is this repo's existing verification convention for this file). Confirm by inspection: `isWholeMatchIdentity` requires `rule.replacement.trim() === '$1'` *and* the pattern's entire source to be one single outer-wrapping group. Any rule whose replacement is a literal string, a different `$N`, or multiple `$N` references — which describes every rule actually implicated in the v4.1.5/v4.1.6/v4.1.7/v4.1.8 fixes per `CHANGELOG.md` — fails the `=== '$1'` check and is unaffected by this guard.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add tests/rule-integrity-audit.js
@@ -151,7 +151,7 @@ currently exits 1 on a rule set that has no real splice bug."
 - Consumes: `npm run test:rules` exiting 0 (Task 1).
 - Produces: a required CI check on every push/PR to `main`.
 
-- [ ] **Step 1: Add the CI step**
+- [x] **Step 1: Add the CI step**
 
 In `.github/workflows/ci.yml`, replace:
 
@@ -182,18 +182,18 @@ with:
       run: npm run test:rules
 ```
 
-- [ ] **Step 2: Verify locally before pushing**
+- [x] **Step 2: Verify locally before pushing**
 
 Run: `npm run test:rules`
 Expected: exit code 0 (confirms Task 1 landed; this step doesn't run the workflow YAML itself, just re-confirms the command it invokes is green).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add .github/workflows/ci.yml
 git commit -m "ci: gate on rule-integrity audit (test:rules)"
 ```
 
-- [ ] **Step 4: Verify in CI**
+- [x] **Step 4: Verify in CI**
 
 Push (or open a PR) and confirm the new "Rule integrity audit" step appears and passes in the GitHub Actions run. This is the first real end-to-end confirmation that the wiring works — the local `npm run test:rules` runs in Steps 1/2/4 of Task 1 and Step 2 of this task all use the same Node version installed locally, not the workflow's matrixed `node-version: [18.x, 20.x, 22.x]`; if any of those versions behaves differently (unlikely for pure regex/string logic, but unverified), the CI run is what actually confirms it.
