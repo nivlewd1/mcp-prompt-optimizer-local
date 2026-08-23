@@ -253,6 +253,16 @@ function findMatchingParenEnd(source, openIndex) {
   // Returns the index of the ')' that closes the '(' at openIndex, or -1 if
   // openIndex isn't an opening paren or has no match (shouldn't happen for a
   // pattern that already compiled into a RegExp).
+  //
+  // Fail-safe note: this does not track character classes ([...]), so a
+  // literal '(' or ')' inside [...] would be miscounted. That miscount can
+  // only cause UNDER-matching (returning -1 or an earlier index than the
+  // true closing paren), never OVER-matching (a later index than the real
+  // closing paren) -- over-matching would require an extra unmatched ')' in
+  // the source, which is always a JS regex SyntaxError, and patterns only
+  // reach this function after they've already compiled successfully. So any
+  // miscount here is fail-safe: it can only cause Check 4 to flag MORE
+  // things (false positive), never suppress a real issue (false negative).
   if (source[openIndex] !== '(') return -1;
   let depth = 0;
   for (let i = openIndex; i < source.length; i++) {
@@ -351,6 +361,12 @@ function main() {
     // because the synthesizer always places trigger words at real word
     // boundaries. This is a shape heuristic, not a proof; kept separate
     // from the dynamically-verified checks above and labeled as such.
+    // NOTE: this detector only recognizes non-capturing alternation with no
+    // nested ')' in between -- it does NOT see capturing alternation like
+    // (cat|dog), top-level alternation outside any group like cat|dog, or
+    // nested alternation like (?:a(?:x)|b). A green result here means "no
+    // mid-word-splice risk in the shapes this narrow detector recognizes,"
+    // not an exhaustive guarantee.
     const hasAlternation = /\(\?:[^)]*\|[^)]*\)/.test(src);
     const hasBoundary = src.includes('\\b');
     const hasAnchor = src.startsWith('^');
@@ -372,7 +388,7 @@ function main() {
     // discarding the matched `cat`/`dog` text: a real content-loss bug
     // this guard must not suppress.
     const isWholeMatchIdentity =
-      rule.replacement.trim() === '$1' &&
+      rule.replacement === '$1' &&
       src.startsWith('(') &&
       src[1] !== '?' &&
       findMatchingParenEnd(src, 0) === src.length - 1;
@@ -425,12 +441,12 @@ function main() {
   console.log('-'.repeat(80));
   console.log('  ' + results.unverified.map((u) => u.name).join(', '));
 
-  const exitCode = results.flagged.length > 0 ? 1 : 0;
+  const exitCode = (results.flagged.length > 0 || results.unverified.length > 0) ? 1 : 0;
   process.exitCode = exitCode;
 }
 
 if (require.main === module) {
   main();
 } else {
-  module.exports = { synthesize, countCaptureGroups };
+  module.exports = { synthesize, countCaptureGroups, findMatchingParenEnd };
 }
