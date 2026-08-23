@@ -364,9 +364,17 @@ function main() {
     // See preserve_ai_parameters (lib/optimization-rules.js), flagged here
     // before this guard despite `replacement: "$1"` on a pattern that is
     // one single outer-wrapping group.
+    // The outer paren must itself be a CAPTURING group (src[1] !== '?'),
+    // matching countCaptureGroups's own convention -- otherwise a pattern
+    // like `(?:(id)(?:cat|dog))` with replacement "$1" would pass this
+    // guard (its non-capturing outer wrap spans the whole source) while
+    // actually only echoing the inner `(id)` capture and silently
+    // discarding the matched `cat`/`dog` text: a real content-loss bug
+    // this guard must not suppress.
     const isWholeMatchIdentity =
       rule.replacement.trim() === '$1' &&
       src.startsWith('(') &&
+      src[1] !== '?' &&
       findMatchingParenEnd(src, 0) === src.length - 1;
     if (hasAlternation && !hasBoundary && !hasAnchor && !isWholeMatchIdentity) {
       issues.push('STATIC HEURISTIC (unproven): bare alternation with no \\b anchor and no ^ anchor -- possible mid-word match risk, same shape as the v4.1.5 bug class; needs manual review, not auto-confirmed');
