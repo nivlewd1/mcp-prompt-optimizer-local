@@ -189,7 +189,6 @@ mcp-prompt-optimizer-local help
 ```json
 {
   "apiKey": "sk-local-pro-your-key-here",
-  "version": "3.1.0",
   "features_enabled": [
     "local_processing",
     "template_management",
@@ -282,27 +281,14 @@ stringData:
     mcp-prompt-optimizer-local check-license
 ```
 
-## 🔄 Migration from Previous Versions
+## 🔄 Upgrading
 
-### From v3.0.x
 ```bash
-# Seamless upgrade - no breaking changes
 npm update -g mcp-prompt-optimizer-local
-
-# Verify upgrade
-mcp-prompt-optimizer-local --version  # Should show 3.1.0
+mcp-prompt-optimizer-local --version
 ```
 
-### From v2.x
-```bash
-# Update environment variable name
-# Old: MCP_LICENSE_KEY
-# New: OPTIMIZER_API_KEY
-export OPTIMIZER_API_KEY="$MCP_LICENSE_KEY"
-
-# Install new version
-npm install -g mcp-prompt-optimizer-local
-```
+See [CHANGELOG.md](./CHANGELOG.md) for breaking changes between versions.
 
 ## 📚 Documentation
 
@@ -317,28 +303,9 @@ npm install -g mcp-prompt-optimizer-local
 - **📧 Email**: support@promptoptimizer.help
 - **💬 Discussions**: [GitHub Discussions](https://github.com/nivlewd1/mcp-prompt-optimizer-local/discussions)
 
-## 🏆 What's New in v3.1.0
+## 🏆 What's New
 
-### 🌍 Cross-Platform Support
-- ✅ **macOS Intel & Apple Silicon** - Native binaries for all Mac architectures
-- ✅ **Linux x64 & ARM64** - Universal Linux support including Raspberry Pi
-- ✅ **Automatic Downloads** - Missing binaries fetched from GitHub releases
-- ✅ **Enhanced Security** - Multi-platform integrity verification
-
-### 🚀 CI/CD Automation
-- ✅ **GitHub Actions Pipeline** - Automated builds for all platforms
-- ✅ **Release Automation** - Automatic releases with verified binaries
-- ✅ **Quality Assurance** - Comprehensive testing across platforms
-
-### 🛡️ Security Enhancements
-- ✅ **Binary Integrity** - SHA256 verification for all platforms
-- ✅ **Download Security** - Verified downloads from GitHub releases
-- ✅ **Multi-Gate Validation** - Enhanced installation security
-
-### 🤖 LLM Integration
-- ✅ **Dual Optimization Tiers** - Rules-based + optional LLM enhancement
-- ✅ **Automatic Fallback** - Graceful degradation if OpenAI unavailable
-- ✅ **OpenAI Integration** - Enhanced optimization using GPT models
+See [CHANGELOG.md](./CHANGELOG.md) for the full, version-by-version release history.
 
 ## 📊 Technical Specifications
 
@@ -348,16 +315,6 @@ npm install -g mcp-prompt-optimizer-local
 - **Memory Usage**: <100MB typical
 - **Startup Time**: <2 seconds
 - **Optimization Speed**: <500ms per request
-
-## 🎉 Success Stories
-
-> *"Finally works on my M2 MacBook! The installation was seamless and performance is excellent."* - **macOS User**
-
-> *"Perfect for our Linux ARM64 servers. Auto-detection worked flawlessly."* - **DevOps Engineer**
-
-> *"Love the enhanced security features. Enterprise deployment was straightforward."* - **Security Architect**
-
----
 
 **Ready to optimize prompts on any platform? Install now and experience the future of cross-platform prompt intelligence!** 🚀
 
