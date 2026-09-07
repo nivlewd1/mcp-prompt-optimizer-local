@@ -147,7 +147,7 @@ mcp-prompt-optimizer-local check-license
 - **🤖 Dual Optimization Tiers**:
   - **Rules-based**: Sophisticated AI-aware optimization (always available)
   - **LLM-enhanced**: OpenAI-powered optimization (requires OPENAI_API_KEY)
-- **⚡ Performance Optimized** - <2s startup, <500ms per optimization
+- **⚡ Performance Optimized** - fast local startup, sub-second optimization on typical prompts
 
 ## 💰 Licensing Options
 
