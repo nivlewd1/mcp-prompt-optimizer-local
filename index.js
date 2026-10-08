@@ -646,7 +646,11 @@ async function main() {
                 process.exit(1);
             }
             
-        } else if (args.includes('--health') || args.includes('-h')) {
+        } else if (args.includes('--version') || args.includes('-v')) {
+            console.log(require('./package.json').version);
+            process.exit(0);
+
+        } else if (args.includes('--health') || args.includes('-h') || args.includes('check-license')) {
             await optimizer.initialize();
             const health = await optimizer.getSystemHealth();
             console.log(JSON.stringify(health, null, 2));

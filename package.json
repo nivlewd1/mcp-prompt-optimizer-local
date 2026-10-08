@@ -4,7 +4,8 @@
   "description": "Advanced cross-platform prompt optimization with MCP integration and 120+ optimization rules",
   "main": "index.js",
   "bin": {
-    "mcp-optimizer": "index.js"
+    "mcp-optimizer": "index.js",
+    "mcp-prompt-optimizer-local": "index.js"
   },
   "scripts": {
     "test": "node index.js --test",
