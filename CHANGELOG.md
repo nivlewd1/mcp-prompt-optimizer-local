@@ -5,6 +5,21 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.10] - 2026-10-08
+
+### Fixed
+- **`mcp-prompt-optimizer-local` command did not exist after install.** The package only registered the
+  `mcp-optimizer` bin, but the README (and every MCP client config example in it) uses
+  `mcp-prompt-optimizer-local`, so a client configured from the README could not start the server.
+  Both names are now registered.
+- **`--version` and `check-license` were documented but not implemented.** `--version` / `-v` now
+  prints the package version; `check-license` runs the same validation as `--health` (the existing
+  `npm run check-license` script already did this).
+
+### Changed
+- License validation requests now send `User-Agent: mcp-prompt-optimizer-local/<version>` so the
+  backend can tell this client apart from the cloud package and the raw API.
+
 ## [4.1.8] - 2026-07-30
 
 ### Fixed
