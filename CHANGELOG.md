@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   LLM client, makes no LLM calls, and ignores that variable. The README's OpenAI setup step, client-config and
   Docker/Kubernetes/CI examples, the Pro-licence bullet, the `llm_integration` feature flag, the `llm-enhancement`
   keyword and the `hybrid_llm_optimization` manifest capability are removed.
+- **`--test` no longer reports a failing "Binary Availability" check.** Optimization runs in Node and uses no native binary; the check always failed because the method it called never existed.
+- **`optimize_prompt` validates its input.** An empty, whitespace-only or non-string prompt returns a clear error and no longer uses up one of the free tier's 5 daily optimizations (or leaks a JavaScript TypeError).
 
 ## [4.1.11] - 2026-10-14
 

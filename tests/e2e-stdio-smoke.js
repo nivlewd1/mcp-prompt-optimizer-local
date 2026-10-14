@@ -31,8 +31,14 @@ function assert(condition, message) {
 
 function runServer({ env = {}, requests, timeoutMs = 20000, waitForId = null }) {
   return new Promise((resolve) => {
+    // Fresh HOME per server: the free-tier daily counter lives in the home directory, so without this the
+    // suite fails once the developer's real 5/day allowance is used up.
+    const os = require('os');
+    const fs = require('fs');
+    const tmpHome = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-local-home-'));
+    const isolated = { HOME: tmpHome, USERPROFILE: tmpHome, APPDATA: path.join(tmpHome, 'AppData'), LOCALAPPDATA: path.join(tmpHome, 'Local') };
     const child = spawn(process.execPath, [INDEX_JS], {
-      env: { ...process.env, ...env },
+      env: { ...process.env, ...isolated, ...env },
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 
@@ -190,6 +196,31 @@ async function testMalformedKeyedFormatRejectedLocally() {
   assert(!!listResp?.result?.tools || result.exitCode !== null, 'server reaches a defined state (tools/list answers, or exits deliberately) instead of hanging');
 }
 
+async function testInvalidPromptRejectedWithoutSpendingQuota() {
+  console.log('\n[TEST] optimize_prompt rejects bad input and does not use up a free daily optimization');
+  const os = require('os');
+  const fs = require('fs');
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), 'mcp-local-e2e-'));
+  const call = (id, args) => ({ jsonrpc: '2.0', id, method: 'tools/call', params: { name: 'optimize_prompt', arguments: args } });
+  const result = await runServer({
+    // fresh HOME: the daily counter lives in the home directory, so a clean one starts at zero
+    env: { HOME: home, USERPROFILE: home, APPDATA: path.join(home, 'AppData'), LOCALAPPDATA: path.join(home, 'Local'), OPTIMIZER_API_KEY: '' },
+    requests: [
+      wire(initializeRequest, 500), wire(initializedNotification, 300),
+      wire(call(3, { prompt: '' }), 400), wire(call(4, { prompt: 123 }), 400), wire(call(5, {}), 400),
+      wire({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'get_quota_status', arguments: {} } }, 500),
+    ],
+    timeoutMs: 15000,
+    waitForId: 6,
+  });
+  const text = (id) => ((result.rpcResponses.find((r) => r.id === id) || {}).result || {}).content?.[0]?.text || '';
+  const isErr = (id) => !!((result.rpcResponses.find((r) => r.id === id) || {}).result || {}).isError;
+  for (const id of [3, 4, 5]) {
+    assert(isErr(id) && /prompt/i.test(text(id)) && !/TypeError|Cannot read|split/.test(text(id)), `bad input #${id - 2} is a clear validation error (no JS error text)`);
+  }
+  assert(/Used:\s*0\/5/.test(text(6)), 'rejected calls did not use up the free daily limit');
+}
+
 (async () => {
   console.log('='.repeat(80));
   console.log('E2E STDIO SMOKE TEST — real subprocess, real JSON-RPC, zero internal coupling');
@@ -197,6 +228,7 @@ async function testMalformedKeyedFormatRejectedLocally() {
 
   await testFreeTierFullProtocolNoCredentials();
   await testMalformedKeyedFormatRejectedLocally();
+  await testInvalidPromptRejectedWithoutSpendingQuota();
 
   console.log('\n' + '='.repeat(80));
   console.log(`RESULT: ${passed} passed, ${failed} failed`);
