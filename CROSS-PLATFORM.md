@@ -258,7 +258,7 @@ spec:
 ## Support & Community
 
 - **GitHub Issues**: [Report platform-specific issues](https://github.com/prompt-optimizer/mcp-prompt-optimizer-local/issues)
-- **Email Support**: support@promptoptimizer.help
+- **Email Support**: support@promptoptimizer.xyz
 - **Documentation**: [https://promptoptimizer-blog.vercel.app/docs](https://promptoptimizer-blog.vercel.app/docs)
 
 ### Reporting Platform Issues

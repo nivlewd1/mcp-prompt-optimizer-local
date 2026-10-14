@@ -5,6 +5,17 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.11] - 2026-10-14
+
+### Fixed
+- **The support address was wrong.** `support@promptoptimizer.help` is not a registered domain, so mail to it
+  bounced. It appeared in the README, the install and binary-integrity failure messages and the cross-platform
+  guide. All now use `support@promptoptimizer.xyz`.
+- **README privacy and licensing wording matches the code.** It said "no data collection" and "48h license
+  caching". Prompts are processed on your machine and are never sent to the backend, but a license key is
+  validated with the backend (the free tier with no key makes no network calls), and that validation is cached
+  for 1 hour.
+
 ## [4.1.10] - 2026-10-08
 
 ### Fixed
@@ -408,7 +419,7 @@ This release achieves full feature parity with the Python MCP server, providing:
 ## 🆘 Support & Migration
 
 For migration assistance or support questions:
-- 📧 Email: support@promptoptimizer.help
+- 📧 Email: support@promptoptimizer.xyz
 - 🐛 Issues: [GitHub Issues](https://github.com/mcp-prompt-optimizer/local-npm/issues)
 - 📖 Docs: [Documentation](https://promptoptimizer-blog.vercel.app/docs)
 

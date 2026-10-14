@@ -135,7 +135,7 @@ mcp-prompt-optimizer-local check-license
 - **🔑 License Key Authentication** - Prevents unauthorized usage
 - **🔍 Binary Integrity Verification** - SHA256 hash validation
 - **🚪 Multi-Gate Installation** - Four-layer security validation
-- **🏠 100% Local Processing** - Complete privacy, no data collection
+- **🏠 Local Processing** - Prompts are optimized on your machine and never sent to the backend. The free tier needs no key and makes no network calls; a license key is validated with the backend
 - **🛡️ Tamper Detection** - Detects modified or corrupted binaries
 
 ## 🎯 Key Features
@@ -161,7 +161,7 @@ mcp-prompt-optimizer-local check-license
 - ✅ **Unlimited optimizations** - No daily limits
 - ✅ **Enhanced algorithms** - Advanced optimization techniques
 - ✅ **Priority binary updates** - Latest optimization improvements
-- ✅ **Extended offline operation** - 48h license caching
+- ✅ **License validation cached for 1 hour** - a keyed license needs to reach the backend to re-validate
 - ✅ **LLM enhancement support** - Works with OpenAI API
 
 ## 📖 Usage Examples
@@ -300,7 +300,7 @@ See [CHANGELOG.md](./CHANGELOG.md) for breaking changes between versions.
 ## 🆘 Support
 
 - **🐛 Issues**: [GitHub Issues](https://github.com/nivlewd1/mcp-prompt-optimizer-local/issues)
-- **📧 Email**: support@promptoptimizer.help
+- **📧 Email**: support@promptoptimizer.xyz
 - **💬 Discussions**: [GitHub Discussions](https://github.com/nivlewd1/mcp-prompt-optimizer-local/discussions)
 
 ## 🏆 What's New

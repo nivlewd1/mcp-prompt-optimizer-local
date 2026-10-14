@@ -375,7 +375,7 @@ class SecurePostInstaller {
     console.log('3. Binary: npm cache clean --force && npm uninstall && npm install mcp-prompt-optimizer-local');
     console.log('4. Platform: Windows/macOS/Linux on x64/arm64; Node.js 16+\n');
     console.log('🆓 Get free license: https://promptoptimizer.xyz/local-license');
-    console.log('📧 Support: support@promptoptimizer.help\n');
+    console.log('📧 Support: support@promptoptimizer.xyz\n');
   }
 
   async run() {
@@ -409,7 +409,7 @@ class SecurePostInstaller {
       console.log('1. npm cache clean --force');
       console.log('2. npm uninstall mcp-prompt-optimizer-local');
       console.log('3. npm install mcp-prompt-optimizer-local');
-      console.log('\nIf the problem persists, contact support@promptoptimizer.help');
+      console.log('\nIf the problem persists, contact support@promptoptimizer.xyz');
       process.exit(1);
     }
   }
