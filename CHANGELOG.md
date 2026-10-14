@@ -5,6 +5,15 @@ All notable changes to the MCP Prompt Optimizer Local package will be documented
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.1.12] - 2026-10-14
+
+### Fixed
+- **The package no longer advertises an LLM tier it does not have.** The README, package keywords and manifest
+  described an "LLM-enhanced" tier that needs `OPENAI_API_KEY`. The local package is rules-based only: it ships no
+  LLM client, makes no LLM calls, and ignores that variable. The README's OpenAI setup step, client-config and
+  Docker/Kubernetes/CI examples, the Pro-licence bullet, the `llm_integration` feature flag, the `llm-enhancement`
+  keyword and the `hybrid_llm_optimization` manifest capability are removed.
+
 ## [4.1.11] - 2026-10-14
 
 ### Fixed

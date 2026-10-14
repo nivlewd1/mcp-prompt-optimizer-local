@@ -13,7 +13,7 @@ See the MCP Prompt Optimizer Local in action! Watch our comprehensive demo:
 - 🔑 License setup (Basic FREE + Pro $79 one-time)  
 - 🔧 MCP client configuration
 - 🧠 Live prompt optimization examples
-- 🤖 Dual-tier showcase (Rules + LLM)
+- 🤖 Rules-based optimization showcase
 
 ---
 
@@ -32,18 +32,12 @@ echo 'export OPTIMIZER_API_KEY="sk-local-basic-your-key-here"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-### 3. Optional: Set OpenAI API Key (for LLM Enhancement)
-```bash
-# Optional: For enhanced LLM-powered optimization
-export OPENAI_API_KEY="sk-proj-your-openai-key-here"
-```
-
-### 4. Install Globally
+### 3. Install Globally
 ```bash
 npm install -g mcp-prompt-optimizer-local
 ```
 
-### 5. Verify Installation
+### 4. Verify Installation
 ```bash
 mcp-prompt-optimizer-local --version
 mcp-prompt-optimizer-local check-license
@@ -67,15 +61,14 @@ mcp-prompt-optimizer-local check-license
 }
 ```
 
-**Enhanced Configuration (Rules-based + LLM optimization):**
+**Pro configuration:**
 ```json
 {
   "mcpServers": {
     "prompt-optimizer-local": {
       "command": "mcp-prompt-optimizer-local",
       "env": {
-        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
-        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here"
       }
     }
   }
@@ -90,8 +83,7 @@ mcp-prompt-optimizer-local check-license
     "prompt-optimizer-local": {
       "command": "mcp-prompt-optimizer-local",
       "env": {
-        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
-        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here"
       }
     }
   }
@@ -106,8 +98,7 @@ mcp-prompt-optimizer-local check-license
     "prompt-optimizer-local": {
       "command": "mcp-prompt-optimizer-local",
       "env": {
-        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here",
-        "OPENAI_API_KEY": "sk-proj-your-openai-key-here"
+        "OPTIMIZER_API_KEY": "sk-local-pro-your-key-here"
       }
     }
   }
@@ -144,9 +135,7 @@ mcp-prompt-optimizer-local check-license
 - **🔧 Technical Parameter Preservation** - Maintains code and technical details
 - **🐛 Debugging Scenario Detection** - Context-aware optimization
 - **📝 Template Management** - Save and reuse optimization patterns
-- **🤖 Dual Optimization Tiers**:
-  - **Rules-based**: Sophisticated AI-aware optimization (always available)
-  - **LLM-enhanced**: OpenAI-powered optimization (requires OPENAI_API_KEY)
+- **🤖 Rules-based optimization**: AI-aware, runs entirely on your machine; no LLM calls and no OpenAI key needed
 - **⚡ Performance Optimized** - fast local startup, sub-second optimization on typical prompts
 
 ## 💰 Licensing Options
@@ -162,7 +151,6 @@ mcp-prompt-optimizer-local check-license
 - ✅ **Enhanced algorithms** - Advanced optimization techniques
 - ✅ **Priority binary updates** - Latest optimization improvements
 - ✅ **License validation cached for 1 hour** - a keyed license needs to reach the backend to re-validate
-- ✅ **LLM enhancement support** - Works with OpenAI API
 
 ## 📖 Usage Examples
 
@@ -192,8 +180,7 @@ mcp-prompt-optimizer-local help
   "features_enabled": [
     "local_processing",
     "template_management",
-    "cross_platform_support",
-    "llm_integration"
+    "cross_platform_support"
   ]
 }
 ```
@@ -255,7 +242,6 @@ chmod +x ~/.npm-global/lib/node_modules/mcp-prompt-optimizer-local/bin/mcp-optim
 FROM node:18-alpine
 RUN npm install -g mcp-prompt-optimizer-local
 ENV OPTIMIZER_API_KEY="sk-local-pro-your-key-here"
-ENV OPENAI_API_KEY="sk-proj-your-openai-key-here"
 RUN mcp-prompt-optimizer-local check-license
 ```
 
@@ -268,7 +254,6 @@ metadata:
 type: Opaque
 stringData:
   OPTIMIZER_API_KEY: "sk-local-pro-your-key-here"
-  OPENAI_API_KEY: "sk-proj-your-openai-key-here"
 ```
 
 ### CI/CD Integration
@@ -276,7 +261,6 @@ stringData:
 - name: Install MCP Optimizer
   run: |
     export OPTIMIZER_API_KEY="${{ secrets.OPTIMIZER_API_KEY }}"
-    export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
     npm install -g mcp-prompt-optimizer-local
     mcp-prompt-optimizer-local check-license
 ```

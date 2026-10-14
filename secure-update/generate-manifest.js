@@ -81,7 +81,6 @@ async function generateDevManifest() {
     features: [
       'mega_prompt_context_detection',
       'simplicity_enum_fix',
-      'hybrid_llm_optimization',
       'universal_parameter_preservation',
       'cross_platform_support'
     ],

@@ -11,7 +11,7 @@ This directory contains demonstration videos showing the MCP Prompt Optimizer Lo
 - License setup and verification
 - MCP client configuration (Claude Desktop, Cursor, Windsurf)
 - Live optimization examples
-- Dual-tier optimization (Rules-based vs LLM-enhanced)
+- Rules-based optimization examples
 
 ### Video Preview
 ![Demo Video Thumbnail](./mcp-prompt-optimizer-demo.mp4)

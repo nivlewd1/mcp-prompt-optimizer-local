@@ -1,6 +1,6 @@
 {
   "name": "mcp-prompt-optimizer-local",
-  "version": "4.1.11",
+  "version": "4.1.12",
   "description": "Advanced cross-platform prompt optimization with MCP integration and 120+ optimization rules",
   "main": "index.js",
   "bin": {
@@ -31,8 +31,7 @@
     "local-ai",
     "privacy",
     "optimization-rules",
-    "context-detection",
-    "llm-enhancement"
+    "context-detection"
   ],
   "author": "Prompt Optimizer Team <support@promptoptimizer.xyz>",
   "license": "Proprietary",
