@@ -1,5 +1,7 @@
 # 🌍 MCP Prompt Optimizer Local - Cross-Platform Edition
 
+> **Final release - this package is deprecated.** It is a rules-based prompt formatter with no LLM tier. Frontier models rewrite prompts better on their own, so we are no longer developing it. Existing keys keep validating through the sunset date announced on https://promptoptimizer.xyz. For templates, evaluation and Context Engineering use the cloud package: `npm install -g mcp-prompt-optimizer`.
+
 Advanced Local Prompt Intelligence Engine with complete privacy and sophisticated content analysis. Now with **universal cross-platform support** for Windows, macOS, and Linux.
 
 ## 🎬 Demo Video
